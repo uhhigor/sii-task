@@ -12,25 +12,25 @@ public class ProductBuilder {
     private String description;
     private List<ProductPrice> prices;
 
-    public ProductBuilder name(String name) {
+    public ProductBuilder name(String name) throws ProductBuilderException {
         if(name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("Name cannot be null or empty");
+            throw new ProductBuilderException("Name cannot be null or empty");
         }
         this.name = name;
         return this;
     }
 
-    public ProductBuilder description(String description) {
+    public ProductBuilder description(String description) throws ProductBuilderException {
         if(description == null || description.isEmpty()) {
-            throw new IllegalArgumentException("Description cannot be null or empty");
+            throw new ProductBuilderException("Description cannot be null or empty");
         }
         this.description = description;
         return this;
     }
 
-    public ProductBuilder prices(List<ProductPrice> prices) {
+    public ProductBuilder prices(List<ProductPrice> prices) throws ProductBuilderException {
         if(prices == null || prices.isEmpty()) {
-            throw new IllegalArgumentException("Prices cannot be null or empty");
+            throw new ProductBuilderException("Prices cannot be null or empty");
         }
         this.prices = prices;
         return this;

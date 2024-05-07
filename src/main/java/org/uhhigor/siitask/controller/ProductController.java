@@ -35,7 +35,7 @@ public class ProductController {
             Product product = productService.addProduct(productDto);
             return ResponseEntity.ok(new Product.ProductDto(product));
         } catch (ProductServiceException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage() + ": " + e.getCause().getMessage());
         }
     }
 
@@ -45,7 +45,7 @@ public class ProductController {
             Product product = productService.updateProduct(productDto, id);
             return ResponseEntity.ok(new Product.ProductDto(product));
         } catch (ProductServiceException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage() + ": " + e.getCause().getMessage());
         }
     }
 
@@ -55,7 +55,7 @@ public class ProductController {
             Product product = productService.getById(id);
             return ResponseEntity.ok(new Product.ProductDto(product));
         } catch (ProductServiceException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage() + ": " + e.getCause().getMessage());
         }
     }
 
@@ -65,7 +65,7 @@ public class ProductController {
             productService.deleteProduct(id);
             return ResponseEntity.ok().build();
         } catch (ProductServiceException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage() + ": " + e.getCause().getMessage());
         }
     }
 }
