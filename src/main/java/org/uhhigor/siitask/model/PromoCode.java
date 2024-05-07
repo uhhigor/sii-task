@@ -2,6 +2,7 @@ package org.uhhigor.siitask.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.uhhigor.siitask.util.CurrencyConverter;
 
@@ -33,12 +34,13 @@ public class PromoCode {
     private Integer usesLeft;
 
     @Getter
+    @NoArgsConstructor
     public static class PromoCodeDto {
-        private final String code;
-        private final Date expirationDate;
-        private final Double discountAmount;
-        private final String currency;
-        private final Integer uses;
+        private String code;
+        private Date expirationDate;
+        private Double discountAmount;
+        private String currency;
+        private Integer uses;
         public PromoCodeDto(PromoCode promoCode) {
             this.code = promoCode.getCode();
             this.expirationDate = promoCode.getExpirationDate();

@@ -12,16 +12,16 @@ public class ProductBuilder {
     private List<ProductPrice> prices;
 
     public ProductBuilder name(String name) throws ProductBuilderException {
-        if(name == null || name.isEmpty()) {
-            throw new ProductBuilderException("Name cannot be null or empty");
+        if(name.isEmpty()) {
+            throw new ProductBuilderException("Name cannot be empty");
         }
         this.name = name;
         return this;
     }
 
     public ProductBuilder description(String description) throws ProductBuilderException {
-        if(description == null || description.isEmpty()) {
-            throw new ProductBuilderException("Description cannot be null or empty");
+        if(description.isEmpty()) {
+            throw new ProductBuilderException("Description cannot be empty");
         }
         this.description = description;
         return this;
@@ -36,10 +36,10 @@ public class ProductBuilder {
     }
 
     public Product build() throws ProductBuilderException {
-        if(name == null || name.isEmpty()) {
+        if(name.isEmpty()) {
             throw new ProductBuilderException("Name is required");
         }
-        if(prices == null || prices.isEmpty()) {
+        if(prices.isEmpty()) {
             throw new ProductBuilderException("Prices are required");
         }
 

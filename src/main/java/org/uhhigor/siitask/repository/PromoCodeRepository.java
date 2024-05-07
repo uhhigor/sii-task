@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface PromoCodeRepository extends CrudRepository<PromoCode, Long> {
     Optional<PromoCode> findByCode(String code);
+
+    boolean existsByCode(String code);
 }

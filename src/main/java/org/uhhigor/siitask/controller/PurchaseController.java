@@ -1,10 +1,12 @@
 package org.uhhigor.siitask.controller;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.uhhigor.siitask.exception.product.ProductNotFoundException;
 import org.uhhigor.siitask.exception.promocode.CurrenciesDoNotMatchException;
 import org.uhhigor.siitask.exception.promocode.PromoCodeNotFoundException;
@@ -91,7 +93,7 @@ public class PurchaseController {
     }
 
     @Getter
-    @AllArgsConstructor
+    @NoArgsConstructor
     public static class PurchaseRequest {
         private Long productId;
         private String currencyCode;

@@ -38,11 +38,19 @@ public class ProductService {
     public Product addProduct(Product.ProductDto productDto) throws ProductServiceException {
         List<ProductPrice> productPrices = savePricesFromDto(productDto.getPrices());
         try {
-            Product product = new ProductBuilder()
-                    .name(productDto.getName())
-                    .description(productDto.getDescription())
-                    .prices(productPrices)
-                    .build();
+            Product product;
+            if(!productDto.getDescription().isEmpty()) {
+                product = new ProductBuilder()
+                        .name(productDto.getName())
+                        .description(productDto.getDescription())
+                        .prices(productPrices)
+                        .build();
+            } else {
+                product = new ProductBuilder()
+                        .name(productDto.getName())
+                        .prices(productPrices)
+                        .build();
+            }
             return productRepository.save(product);
         } catch (ProductBuilderException e) {
             productPriceRepository.deleteAll(productPrices);

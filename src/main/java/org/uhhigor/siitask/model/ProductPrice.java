@@ -2,6 +2,7 @@ package org.uhhigor.siitask.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.uhhigor.siitask.util.CurrencyConverter;
 
@@ -23,14 +24,10 @@ public class ProductPrice {
     private Currency currency;
 
     @Getter
+    @NoArgsConstructor
     public static class ProductPriceDto {
         private Double price;
         private String currency;
-
-        public ProductPriceDto(Double price, String currency) {
-            this.price = price;
-            this.currency = currency;
-        }
 
         public ProductPriceDto(ProductPrice productPrice) {
             this.price = productPrice.getPrice();

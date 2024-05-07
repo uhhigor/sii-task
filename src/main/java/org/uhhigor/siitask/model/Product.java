@@ -2,6 +2,7 @@ package org.uhhigor.siitask.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -33,11 +34,14 @@ public class Product {
         return null;
     }
     @Getter
+    @NoArgsConstructor
     public static class ProductDto {
-        private final String name;
-        private final String description;
-        private final List<ProductPrice.ProductPriceDto> prices;
+        private Long id;
+        private String name;
+        private String description;
+        private List<ProductPrice.ProductPriceDto> prices;
         public ProductDto(Product product) {
+            this.id = product.getId();
             this.name = product.getName();
             this.description = product.getDescription();
             this.prices = new ArrayList<>();

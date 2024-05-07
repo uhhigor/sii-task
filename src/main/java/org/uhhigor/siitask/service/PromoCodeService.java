@@ -27,6 +27,9 @@ public class PromoCodeService {
     }
 
     public PromoCode addPromoCode(PromoCode.PromoCodeDto promoCodeDto) throws PromoCodeServiceException {
+        if(codeExists(promoCodeDto.getCode())) {
+            throw new PromoCodeServiceException("Promo code with this code already exists");
+        }
         try {
             PromoCode promoCode = new PromoCodeBuilder()
                     .code(promoCodeDto.getCode())
@@ -43,6 +46,10 @@ public class PromoCodeService {
 
     public PromoCode getByCode(String code) throws PromoCodeNotFoundException {
         return promoCodeRepository.findByCode(code).orElseThrow(() -> new PromoCodeNotFoundException("Promo code not found"));
+    }
+
+    public boolean codeExists(String code) {
+        return promoCodeRepository.existsByCode(code);
     }
 
     public void usePromoCode(PromoCode promoCode) {
