@@ -29,7 +29,7 @@ public class ProductService {
     }
 
     public Product addProduct(Product.ProductDto productDto) throws ProductServiceException {
-        List<ProductPrice> productPrices = savePricesFromDto(productDto);
+        List<ProductPrice> productPrices = savePricesFromDto(productDto.getPrices());
         try {
             Product product = new ProductBuilder()
                     .name(productDto.getName())
@@ -56,14 +56,14 @@ public class ProductService {
         product.setPrices(null);
         productPriceRepository.deleteAll(productPrices);
 
-        productPrices = savePricesFromDto(productDto);
+        productPrices = savePricesFromDto(productDto.getPrices());
         product.setPrices(productPrices);
         return productRepository.save(product);
     }
 
-    private List<ProductPrice> savePricesFromDto(Product.ProductDto productDto) throws ProductServiceException {
+    private List<ProductPrice> savePricesFromDto(List<ProductPrice.ProductPriceDto> productPriceDtos) throws ProductServiceException {
         List<ProductPrice> prices = new ArrayList<>();
-        for(ProductPrice.ProductPriceDto priceDto : productDto.getPrices()) {
+        for(ProductPrice.ProductPriceDto priceDto : productPriceDtos) {
             try {
                 prices.add(new ProductPriceBuilder()
                         .currency(priceDto.getCurrency())
