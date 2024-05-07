@@ -69,16 +69,14 @@ public class PurchaseBuilder {
         }
         purchase.setCurrency(currency);
 
-        boolean priceFound = false;
         for(ProductPrice productPrice : product.getPrices()) {
             if(productPrice.getCurrency().equals(currency)) {
-                priceFound = true;
                 purchase.setRegularPrice(productPrice.getPrice());
                 break;
             }
         }
 
-        if(!priceFound) {
+        if(purchase.getRegularPrice() == null){
             throw new PurchaseBuilderException("Product does not have a price in the specified currency");
         }
 

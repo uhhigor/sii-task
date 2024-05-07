@@ -3,6 +3,7 @@ package org.uhhigor.siitask.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.uhhigor.siitask.util.CurrencyConverter;
 
 import java.util.Currency;
 import java.util.Date;

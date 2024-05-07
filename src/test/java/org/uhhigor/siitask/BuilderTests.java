@@ -7,13 +7,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.uhhigor.siitask.builder.ProductBuilder;
 import org.uhhigor.siitask.builder.ProductPriceBuilder;
 import org.uhhigor.siitask.builder.PromoCodeBuilder;
+import org.uhhigor.siitask.builder.PurchaseBuilder;
 import org.uhhigor.siitask.exception.ProductBuilderException;
 import org.uhhigor.siitask.exception.ProductPriceBuilderException;
 import org.uhhigor.siitask.exception.PromoCodeBuilderException;
+import org.uhhigor.siitask.exception.PurchaseBuilderException;
 import org.uhhigor.siitask.model.ProductPrice;
 import org.uhhigor.siitask.model.PromoCode;
 import org.uhhigor.siitask.repository.ProductRepository;
 import org.uhhigor.siitask.model.Product;
+import org.uhhigor.siitask.model.Purchase;
+
 
 import java.util.Currency;
 import java.util.Date;
@@ -92,15 +96,12 @@ public class BuilderTests {
 
         assertThrowsExactly(PromoCodeBuilderException.class, () -> {
             new PromoCodeBuilder()
-                    .code("")
-                    .build();
+                    .code("");
         });
 
         assertThrowsExactly(PromoCodeBuilderException.class, () -> {
             new PromoCodeBuilder()
-                    .code("TEST")
-                    .expirationDate(new Date(System.currentTimeMillis() - 1000))
-                    .build();
+                    .expirationDate(new Date(System.currentTimeMillis() - 1000));
         });
 
         try {
@@ -136,6 +137,77 @@ public class BuilderTests {
             fail("PromoCodeBuilderException thrown");
         }
         System.out.println("PromoCodeBuilder test passed");
+    }
+
+    @Test
+    void testPurchaseBuilder() {
+        assertThrowsExactly(PurchaseBuilderException.class, () -> {
+            new PurchaseBuilder().build();
+        });
+        assertThrowsExactly(PurchaseBuilderException.class, () -> {
+            new PurchaseBuilder()
+                    .date(new Date(System.currentTimeMillis() + 5000));
+        });
+
+        assertDoesNotThrow(() -> {
+            new PurchaseBuilder()
+                    .date(new Date());
+        });
+
+        try {
+            Product product = new ProductBuilder()
+                    .name("Example product name")
+                    .description("Example description")
+                    .prices(List.of(new ProductPriceBuilder()
+                            .currency("USD")
+                            .price(100.0)
+                            .build()))
+                    .build();
+
+            PromoCode promoCode = new PromoCodeBuilder()
+                    .code("TEST")
+                    .expirationDate(new Date(System.currentTimeMillis() + 1000))
+                    .discountAmount(10.0)
+                    .currency("USD")
+                    .uses(10)
+                    .eligibleProducts(List.of(product))
+                    .build();
+
+            Purchase purchase = new PurchaseBuilder()
+                    .date(new Date())
+                    .product(product)
+                    .currency("USD")
+                    .build();
+
+            assertEquals(product, purchase.getProduct());
+            assertEquals(Currency.getInstance("USD"), purchase.getCurrency());
+            assertEquals(100.0, purchase.getRegularPrice());
+            assertEquals(0.0, purchase.getDiscountApplied());
+            assertEquals(100.0, purchase.getFinalPrice());
+
+            purchase = new PurchaseBuilder()
+                    .date(new Date())
+                    .product(product)
+                    .currency("USD")
+                    .promoCode(promoCode)
+                    .build();
+
+            assertEquals(product, purchase.getProduct());
+            assertEquals(Currency.getInstance("USD"), purchase.getCurrency());
+            assertEquals(100.0, purchase.getRegularPrice());
+            assertEquals(10.0, purchase.getDiscountApplied());
+            assertEquals(90.0, purchase.getFinalPrice());
+
+        } catch (ProductPriceBuilderException e) {
+            fail("ProductPriceBuilderException thrown");
+        } catch (ProductBuilderException e) {
+            fail("ProductBuilderException thrown");
+        } catch (PromoCodeBuilderException e) {
+            fail("PromoCodeBuilderException thrown");
+        } catch (PurchaseBuilderException e) {
+            fail("PurchaseBuilderException thrown");
+        }
+        System.out.println("PurchaseBuilder test passed");
     }
 
 }

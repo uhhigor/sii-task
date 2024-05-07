@@ -1,4 +1,4 @@
-package org.uhhigor.siitask.model;
+package org.uhhigor.siitask.util;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;

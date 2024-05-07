@@ -55,7 +55,10 @@ public class PromoCodeBuilder {
         return this;
     }
 
-    public PromoCodeBuilder uses(Integer uses) {
+    public PromoCodeBuilder uses(Integer uses) throws PromoCodeBuilderException {
+        if(uses == null || uses <= 0) {
+            throw new PromoCodeBuilderException("Uses must be greater than 0");
+        }
         this.usesLeft = uses;
         return this;
     }
