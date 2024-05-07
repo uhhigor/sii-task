@@ -10,6 +10,9 @@ public class ProductPriceBuilder {
     private Currency currency;
 
     public ProductPriceBuilder price(Double price) {
+        if(price == null || price <= 0) {
+            throw new IllegalArgumentException("Price must be greater than 0");
+        }
         this.price = price;
         return this;
     }

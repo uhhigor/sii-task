@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Currency;
 import java.util.Date;
 
 @Entity
@@ -15,7 +16,6 @@ public class Purchase {
     @GeneratedValue
     private Long id;
 
-
     @Column(nullable = false)
     private Date date;
 
@@ -26,5 +26,13 @@ public class Purchase {
     @Column(nullable = false)
     private Double regularPrice;
 
+    @Column(nullable = false)
     private Double discountApplied;
+
+    @Column(nullable = false)
+    private Double finalPrice;
+
+    @Convert(converter = CurrencyConverter.class)
+    @Column(nullable = false)
+    private Currency currency;
 }
