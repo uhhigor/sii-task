@@ -1,6 +1,8 @@
-package org.uhhigor.siitask.exception;
+package org.uhhigor.siitask.exception.product;
 
-public class ProductException extends SiiTaskException{
+import org.uhhigor.siitask.exception.SiiTaskException;
+
+public class ProductException extends SiiTaskException {
     public ProductException(String message) {
         super(message);
     }

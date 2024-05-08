@@ -1,20 +1,17 @@
 package org.uhhigor.siitask;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.uhhigor.siitask.builder.ProductBuilder;
 import org.uhhigor.siitask.builder.ProductPriceBuilder;
 import org.uhhigor.siitask.builder.PromoCodeBuilder;
 import org.uhhigor.siitask.builder.PurchaseBuilder;
-import org.uhhigor.siitask.exception.ProductBuilderException;
-import org.uhhigor.siitask.exception.ProductPriceBuilderException;
-import org.uhhigor.siitask.exception.PromoCodeBuilderException;
-import org.uhhigor.siitask.exception.PurchaseBuilderException;
+import org.uhhigor.siitask.exception.product.ProductBuilderException;
+import org.uhhigor.siitask.exception.product.ProductPriceBuilderException;
+import org.uhhigor.siitask.exception.promocode.PromoCodeBuilderException;
+import org.uhhigor.siitask.exception.purchase.PurchaseBuilderException;
 import org.uhhigor.siitask.model.ProductPrice;
 import org.uhhigor.siitask.model.PromoCode;
-import org.uhhigor.siitask.repository.ProductRepository;
 import org.uhhigor.siitask.model.Product;
 import org.uhhigor.siitask.model.Purchase;
 

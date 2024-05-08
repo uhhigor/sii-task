@@ -1,6 +1,8 @@
-package org.uhhigor.siitask.exception;
+package org.uhhigor.siitask.exception.purchase;
 
-public class PurchaseException extends SiiTaskException{
+import org.uhhigor.siitask.exception.SiiTaskException;
+
+public class PurchaseException extends SiiTaskException {
     public PurchaseException(String message) {
         super(message);
     }

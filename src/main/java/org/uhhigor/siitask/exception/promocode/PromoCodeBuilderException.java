@@ -1,4 +1,4 @@
-package org.uhhigor.siitask.exception;
+package org.uhhigor.siitask.exception.promocode;
 
 public class PromoCodeBuilderException extends PromoCodeException{
     public PromoCodeBuilderException(String message) {

@@ -1,10 +1,9 @@
 package org.uhhigor.siitask.builder;
 
-import org.uhhigor.siitask.exception.ProductBuilderException;
+import org.uhhigor.siitask.exception.product.ProductBuilderException;
 import org.uhhigor.siitask.model.Product;
 import org.uhhigor.siitask.model.ProductPrice;
 
-import java.util.Currency;
 import java.util.List;
 
 public class ProductBuilder {

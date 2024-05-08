@@ -1,6 +1,8 @@
-package org.uhhigor.siitask.exception;
+package org.uhhigor.siitask.exception.promocode;
 
-public class PromoCodeException extends SiiTaskException{
+import org.uhhigor.siitask.exception.SiiTaskException;
+
+public class PromoCodeException extends SiiTaskException {
     public PromoCodeException(String message) {
         super(message);
     }
@@ -8,4 +10,6 @@ public class PromoCodeException extends SiiTaskException{
     public PromoCodeException(String message, Throwable cause) {
         super(message, cause);
     }
+
 }
+

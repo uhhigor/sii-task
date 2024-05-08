@@ -1,4 +1,4 @@
-package org.uhhigor.siitask.exception;
+package org.uhhigor.siitask.exception.product;
 
 public class ProductPriceBuilderException extends ProductPriceException{
     public ProductPriceBuilderException(String message) {

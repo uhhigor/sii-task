@@ -1,6 +1,6 @@
 package org.uhhigor.siitask.builder;
 
-import org.uhhigor.siitask.exception.ProductPriceBuilderException;
+import org.uhhigor.siitask.exception.product.ProductPriceBuilderException;
 
 import java.util.Currency;
 import org.uhhigor.siitask.model.ProductPrice;

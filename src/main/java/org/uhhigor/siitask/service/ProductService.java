@@ -3,9 +3,10 @@ package org.uhhigor.siitask.service;
 import org.springframework.stereotype.Service;
 import org.uhhigor.siitask.builder.ProductBuilder;
 import org.uhhigor.siitask.builder.ProductPriceBuilder;
-import org.uhhigor.siitask.exception.ProductBuilderException;
-import org.uhhigor.siitask.exception.ProductPriceBuilderException;
-import org.uhhigor.siitask.exception.ProductServiceException;
+import org.uhhigor.siitask.exception.product.ProductBuilderException;
+import org.uhhigor.siitask.exception.product.ProductNotFoundException;
+import org.uhhigor.siitask.exception.product.ProductPriceBuilderException;
+import org.uhhigor.siitask.exception.product.ProductServiceException;
 import org.uhhigor.siitask.model.Product;
 import org.uhhigor.siitask.model.ProductPrice;
 import org.uhhigor.siitask.repository.ProductPriceRepository;
@@ -28,6 +29,12 @@ public class ProductService {
         return productRepository.findAll();
     }
 
+    public List<Product> getProductsByIds(List<Long> ids) {
+        List<Product> result = new ArrayList<>();
+        productRepository.findAllById(ids).forEach(result::add);
+        return result;
+    }
+
     public Product addProduct(Product.ProductDto productDto) throws ProductServiceException {
         List<ProductPrice> productPrices = savePricesFromDto(productDto.getPrices());
         try {
@@ -43,12 +50,12 @@ public class ProductService {
         }
     }
 
-    public Product getById(Long id) throws ProductServiceException {
-        return productRepository.findById(id).orElseThrow(() -> new ProductServiceException("Product not found"));
+    public Product getProductById(Long id) throws ProductNotFoundException {
+        return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product not found"));
     }
 
-    public Product updateProduct(Product.ProductDto productDto, Long id) throws ProductServiceException {
-        Product product = getById(id);
+    public Product updateProduct(Product.ProductDto productDto, Long id) throws ProductNotFoundException, ProductServiceException {
+        Product product = getProductById(id);
         product.setName(productDto.getName());
         product.setDescription(productDto.getDescription());
 
@@ -79,8 +86,8 @@ public class ProductService {
         return result;
     }
 
-    public void deleteProduct(Long id) throws ProductServiceException {
-        Product product = getById(id);
+    public void deleteProduct(Long id) throws ProductNotFoundException {
+        Product product = getProductById(id);
         productRepository.delete(product);
     }
 }

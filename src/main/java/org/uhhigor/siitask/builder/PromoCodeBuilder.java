@@ -1,6 +1,6 @@
 package org.uhhigor.siitask.builder;
 
-import org.uhhigor.siitask.exception.PromoCodeBuilderException;
+import org.uhhigor.siitask.exception.promocode.PromoCodeBuilderException;
 import org.uhhigor.siitask.model.Product;
 import org.uhhigor.siitask.model.PromoCode;
 
@@ -14,7 +14,6 @@ public class PromoCodeBuilder {
     private Double discountAmount;
     private Currency currency;
     private Integer usesLeft;
-    private List<Product> eligibleProducts;
 
     public PromoCodeBuilder code(String code) throws PromoCodeBuilderException {
         if(code == null) {
@@ -63,14 +62,6 @@ public class PromoCodeBuilder {
         return this;
     }
 
-    public PromoCodeBuilder eligibleProducts(List<Product> products) throws PromoCodeBuilderException {
-        if(products == null || products.isEmpty()) {
-            throw new PromoCodeBuilderException("Eligible products list cannot be null or empty");
-        }
-        this.eligibleProducts = products;
-        return this;
-    }
-
     public PromoCode build() throws PromoCodeBuilderException {
         if(expirationDate == null) {
             throw new PromoCodeBuilderException("Expiration date is required");
@@ -84,9 +75,6 @@ public class PromoCodeBuilder {
         if(usesLeft == null) {
             throw new PromoCodeBuilderException("Uses is required");
         }
-        if(eligibleProducts == null) {
-            throw new PromoCodeBuilderException("Eligible products list is required");
-        }
 
         PromoCode promoCode = new PromoCode();
         promoCode.setCode(code);
@@ -94,7 +82,6 @@ public class PromoCodeBuilder {
         promoCode.setDiscountAmount(discountAmount);
         promoCode.setCurrency(currency);
         promoCode.setUsesLeft(usesLeft);
-        promoCode.setEligibleProducts(eligibleProducts);
         return promoCode;
     }
 }

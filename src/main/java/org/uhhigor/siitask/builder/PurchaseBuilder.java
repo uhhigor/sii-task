@@ -1,6 +1,6 @@
 package org.uhhigor.siitask.builder;
 
-import org.uhhigor.siitask.exception.PurchaseBuilderException;
+import org.uhhigor.siitask.exception.purchase.PurchaseBuilderException;
 import org.uhhigor.siitask.model.Product;
 import org.uhhigor.siitask.model.ProductPrice;
 import org.uhhigor.siitask.model.PromoCode;
@@ -12,8 +12,9 @@ import java.util.Date;
 public class PurchaseBuilder {
     private Date date;
     private Product product;
-    private PromoCode promoCode;
     private Currency currency;
+    private Double discount;
+    private Double regularPrice;
 
     public PurchaseBuilder date(Date date) throws PurchaseBuilderException {
         if(date == null) {
@@ -34,20 +35,28 @@ public class PurchaseBuilder {
         return this;
     }
 
-    public PurchaseBuilder promoCode(PromoCode promoCode) throws PurchaseBuilderException {
-        if(promoCode == null) {
-            throw new PurchaseBuilderException("Promo code cannot be null");
+
+    public PurchaseBuilder currency(Currency currency) throws PurchaseBuilderException {
+        if(currency == null) {
+            throw new PurchaseBuilderException("Currency cannot be null");
         }
-        this.promoCode = promoCode;
+        this.currency = currency;
         return this;
     }
 
-    public PurchaseBuilder currency(String currencyCode) throws PurchaseBuilderException {
-        try {
-            this.currency = Currency.getInstance(currencyCode);
-        } catch (IllegalArgumentException e) {
-            throw new PurchaseBuilderException("Currency code is invalid");
+    public PurchaseBuilder discount(Double discount) throws PurchaseBuilderException {
+        if(discount == null || discount < 0) {
+            throw new PurchaseBuilderException("Discount must be greater than or equal to 0");
         }
+        this.discount = discount;
+        return this;
+    }
+
+    public PurchaseBuilder regularPrice(Double regularPrice) throws PurchaseBuilderException {
+        if(regularPrice == null || regularPrice <= 0) {
+            throw new PurchaseBuilderException("Regular price must be greater than 0");
+        }
+        this.regularPrice = regularPrice;
         return this;
     }
 
@@ -69,37 +78,16 @@ public class PurchaseBuilder {
         }
         purchase.setCurrency(currency);
 
-        for(ProductPrice productPrice : product.getPrices()) {
-            if(productPrice.getCurrency().equals(currency)) {
-                purchase.setRegularPrice(productPrice.getPrice());
-                break;
-            }
+        if(regularPrice == null) {
+            throw new PurchaseBuilderException("Regular price cannot be null");
         }
+        purchase.setRegularPrice(regularPrice);
 
-        if(purchase.getRegularPrice() == null){
-            throw new PurchaseBuilderException("Product does not have a price in the specified currency");
+        if(discount == null) {
+            discount = 0.0;
         }
-
-        if(promoCode != null) {
-            if(!promoCode.getEligibleProducts().contains(product)) {
-                throw new PurchaseBuilderException("Product is not eligible for the promo code");
-            }
-            if(promoCode.getExpirationDate().before(date)) {
-                throw new PurchaseBuilderException("Promo code is expired");
-            }
-            if(promoCode.getUsesLeft() <= 0) {
-                throw new PurchaseBuilderException("Promo code has no uses left");
-            }
-            if(!promoCode.getCurrency().equals(currency)) {
-                throw new PurchaseBuilderException("Promo code currency does not match purchase currency");
-            }
-
-            purchase.setDiscountApplied(promoCode.getDiscountAmount());
-            purchase.setFinalPrice(purchase.getRegularPrice() - promoCode.getDiscountAmount());
-        } else {
-            purchase.setDiscountApplied(0.0);
-            purchase.setFinalPrice(purchase.getRegularPrice());
-        }
+        purchase.setDiscountApplied(discount);
+        purchase.setFinalPrice(regularPrice - discount);
 
         return purchase;
     }

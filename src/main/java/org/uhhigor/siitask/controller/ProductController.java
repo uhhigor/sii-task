@@ -2,7 +2,8 @@ package org.uhhigor.siitask.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.uhhigor.siitask.exception.ProductServiceException;
+import org.uhhigor.siitask.exception.product.ProductNotFoundException;
+import org.uhhigor.siitask.exception.product.ProductServiceException;
 import org.uhhigor.siitask.model.Product;
 import org.uhhigor.siitask.service.ProductService;
 
@@ -44,7 +45,7 @@ public class ProductController {
         try {
             Product product = productService.updateProduct(productDto, id);
             return ResponseEntity.ok(new Product.ProductDto(product));
-        } catch (ProductServiceException e) {
+        } catch (ProductNotFoundException | ProductServiceException e) {
             return ResponseEntity.badRequest().body(e.getMessage() + ": " + e.getCause().getMessage());
         }
     }
@@ -52,9 +53,9 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<Object> getProduct(@PathVariable Long id) {
         try {
-            Product product = productService.getById(id);
+            Product product = productService.getProductById(id);
             return ResponseEntity.ok(new Product.ProductDto(product));
-        } catch (ProductServiceException e) {
+        } catch (ProductNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage() + ": " + e.getCause().getMessage());
         }
     }
@@ -64,7 +65,7 @@ public class ProductController {
         try {
             productService.deleteProduct(id);
             return ResponseEntity.ok().build();
-        } catch (ProductServiceException e) {
+        } catch (ProductNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage() + ": " + e.getCause().getMessage());
         }
     }

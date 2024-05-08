@@ -3,8 +3,10 @@ package org.uhhigor.siitask.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.uhhigor.siitask.exception.product.ProductPriceException;
 
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
 
 @Entity
@@ -22,6 +24,15 @@ public class Product {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<ProductPrice> prices;
+
+    public ProductPrice getProductPriceByCurrency(Currency currency) {
+        for(ProductPrice price : prices) {
+            if(price.getCurrency().equals(currency)) {
+                return price;
+            }
+        }
+        return null;
+    }
     @Getter
     public static class ProductDto {
         private String name;

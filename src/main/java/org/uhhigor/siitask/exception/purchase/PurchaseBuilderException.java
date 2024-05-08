@@ -1,4 +1,4 @@
-package org.uhhigor.siitask.exception;
+package org.uhhigor.siitask.exception.purchase;
 
 public class PurchaseBuilderException extends PurchaseException{
     public PurchaseBuilderException(String message) {
