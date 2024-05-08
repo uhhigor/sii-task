@@ -3,7 +3,6 @@ package org.uhhigor.siitask.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.uhhigor.siitask.exception.product.ProductPriceException;
 
 import java.util.ArrayList;
 import java.util.Currency;
@@ -35,15 +34,9 @@ public class Product {
     }
     @Getter
     public static class ProductDto {
-        private String name;
-        private String description;
-        private List<ProductPrice.ProductPriceDto> prices;
-
-        public ProductDto(String name, String description, List<ProductPrice.ProductPriceDto> prices) {
-            this.name = name;
-            this.description = description;
-            this.prices = prices;
-        }
+        private final String name;
+        private final String description;
+        private final List<ProductPrice.ProductPriceDto> prices;
         public ProductDto(Product product) {
             this.name = product.getName();
             this.description = product.getDescription();

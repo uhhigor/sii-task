@@ -2,9 +2,7 @@ package org.uhhigor.siitask.service;
 
 import org.springframework.stereotype.Service;
 import org.uhhigor.siitask.builder.PurchaseBuilder;
-import org.uhhigor.siitask.exception.product.ProductServiceException;
 import org.uhhigor.siitask.exception.promocode.CurrenciesDoNotMatchException;
-import org.uhhigor.siitask.exception.promocode.PromoCodeServiceException;
 import org.uhhigor.siitask.exception.purchase.PurchaseBuilderException;
 import org.uhhigor.siitask.exception.purchase.PurchaseServiceException;
 import org.uhhigor.siitask.model.Product;
@@ -14,7 +12,6 @@ import org.uhhigor.siitask.repository.PurchaseRepository;
 
 import java.util.Currency;
 import java.util.Date;
-import java.util.Objects;
 
 @Service
 public class PurchaseService {

@@ -1,12 +1,10 @@
 package org.uhhigor.siitask.builder;
 
 import org.uhhigor.siitask.exception.promocode.PromoCodeBuilderException;
-import org.uhhigor.siitask.model.Product;
 import org.uhhigor.siitask.model.PromoCode;
 
 import java.util.Currency;
 import java.util.Date;
-import java.util.List;
 
 public class PromoCodeBuilder {
     private String code;

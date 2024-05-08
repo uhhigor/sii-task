@@ -27,15 +27,11 @@ public class BuilderTests {
 
     @Test
     public void testProductPriceBuilder() {
-        assertThrowsExactly(ProductPriceBuilderException.class, () -> {
-            new ProductPriceBuilder().build();
-        });
+        assertThrowsExactly(ProductPriceBuilderException.class, () -> new ProductPriceBuilder().build());
 
-        assertThrowsExactly(ProductPriceBuilderException.class, () -> {
-            new ProductPriceBuilder()
-                    .currency("Non existent currency code")
-                    .build();
-        });
+        assertThrowsExactly(ProductPriceBuilderException.class, () -> new ProductPriceBuilder()
+                .currency("Non existent currency code")
+                .build());
 
         try {
             ProductPrice productPrice = new ProductPriceBuilder()
@@ -87,19 +83,13 @@ public class BuilderTests {
 
     @Test
     public void testPromoCodeBuilder() {
-        assertThrowsExactly(PromoCodeBuilderException.class, () -> {
-            new PromoCodeBuilder().build();
-        });
+        assertThrowsExactly(PromoCodeBuilderException.class, () -> new PromoCodeBuilder().build());
 
-        assertThrowsExactly(PromoCodeBuilderException.class, () -> {
-            new PromoCodeBuilder()
-                    .code("");
-        });
+        assertThrowsExactly(PromoCodeBuilderException.class, () -> new PromoCodeBuilder()
+                .code(""));
 
-        assertThrowsExactly(PromoCodeBuilderException.class, () -> {
-            new PromoCodeBuilder()
-                    .expirationDate(new Date(System.currentTimeMillis() - 1000));
-        });
+        assertThrowsExactly(PromoCodeBuilderException.class, () -> new PromoCodeBuilder()
+                .expirationDate(new Date(System.currentTimeMillis() - 1000)));
 
         try {
             Product product = new ProductBuilder()

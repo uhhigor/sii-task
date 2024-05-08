@@ -2,8 +2,6 @@ package org.uhhigor.siitask.builder;
 
 import org.uhhigor.siitask.exception.purchase.PurchaseBuilderException;
 import org.uhhigor.siitask.model.Product;
-import org.uhhigor.siitask.model.ProductPrice;
-import org.uhhigor.siitask.model.PromoCode;
 import org.uhhigor.siitask.model.Purchase;
 
 import java.util.Currency;

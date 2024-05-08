@@ -5,10 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.uhhigor.siitask.util.CurrencyConverter;
 
-import java.util.ArrayList;
 import java.util.Currency;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Getter
@@ -36,20 +34,11 @@ public class PromoCode {
 
     @Getter
     public static class PromoCodeDto {
-        private String code;
-        private Date expirationDate;
-        private Double discountAmount;
-        private String currency;
-        private Integer uses;
-
-        public PromoCodeDto(String code, Date expirationDate, Double discountAmount, String currency, Integer uses) {
-            this.code = code;
-            this.expirationDate = expirationDate;
-            this.discountAmount = discountAmount;
-            this.currency = currency;
-            this.uses = uses;
-        }
-
+        private final String code;
+        private final Date expirationDate;
+        private final Double discountAmount;
+        private final String currency;
+        private final Integer uses;
         public PromoCodeDto(PromoCode promoCode) {
             this.code = promoCode.getCode();
             this.expirationDate = promoCode.getExpirationDate();

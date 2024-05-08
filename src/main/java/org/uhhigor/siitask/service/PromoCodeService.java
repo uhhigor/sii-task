@@ -15,11 +15,9 @@ import java.util.List;
 @Service
 public class PromoCodeService {
     private final PromoCodeRepository promoCodeRepository;
-    private final ProductService productService;
 
-    public PromoCodeService(PromoCodeRepository promoCodeRepository, ProductService productService) {
+    public PromoCodeService(PromoCodeRepository promoCodeRepository) {
         this.promoCodeRepository = promoCodeRepository;
-        this.productService = productService;
     }
 
     public List<PromoCode> getAllPromoCodes() {
@@ -45,11 +43,6 @@ public class PromoCodeService {
 
     public PromoCode getByCode(String code) throws PromoCodeNotFoundException {
         return promoCodeRepository.findByCode(code).orElseThrow(() -> new PromoCodeNotFoundException("Promo code not found"));
-    }
-
-    public void deletePromoCode(String code) throws PromoCodeNotFoundException {
-        PromoCode promoCode = getByCode(code);
-        promoCodeRepository.delete(promoCode);
     }
 
     public void usePromoCode(PromoCode promoCode) {
