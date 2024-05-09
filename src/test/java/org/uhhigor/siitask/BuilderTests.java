@@ -8,7 +8,9 @@ import org.uhhigor.siitask.builder.PromoCodeBuilder;
 import org.uhhigor.siitask.builder.PurchaseBuilder;
 import org.uhhigor.siitask.exception.product.ProductException;
 import org.uhhigor.siitask.exception.product.ProductPriceException;
-import org.uhhigor.siitask.exception.purchase.PurchaseBuilderException;
+import org.uhhigor.siitask.exception.promocode.PromoCodeException;
+import org.uhhigor.siitask.exception.promocode.PromoCodeExpirationDateInvalidException;
+import org.uhhigor.siitask.exception.promocode.PromoCodeIncorrectException;
 import org.uhhigor.siitask.model.ProductPrice;
 import org.uhhigor.siitask.model.PromoCode;
 import org.uhhigor.siitask.model.Product;
@@ -55,7 +57,7 @@ public class BuilderTests {
 
     @Test
     public void testProductBuilder() {
-        assertThrowsExactly(ProductBuilderException.class, () -> {
+        assertThrowsExactly(ProductException.class, () -> {
             new ProductBuilder().build();
         });
 
@@ -82,12 +84,12 @@ public class BuilderTests {
 
     @Test
     public void testPromoCodeBuilder() {
-        assertThrowsExactly(PromoCodeBuilderException.class, () -> new PromoCodeBuilder().build());
+        assertThrowsExactly(PromoCodeException.class, () -> new PromoCodeBuilder().build());
 
-        assertThrowsExactly(PromoCodeBuilderException.class, () -> new PromoCodeBuilder()
+        assertThrowsExactly(PromoCodeIncorrectException.class, () -> new PromoCodeBuilder()
                 .code(""));
 
-        assertThrowsExactly(PromoCodeBuilderException.class, () -> new PromoCodeBuilder()
+        assertThrowsExactly(PromoCodeExpirationDateInvalidException.class, () -> new PromoCodeBuilder()
                 .expirationDate(new Date(System.currentTimeMillis() - 1000)));
 
         try {
@@ -103,8 +105,8 @@ public class BuilderTests {
             assertEquals(10.0, promoCode.getDiscountAmount());
             assertEquals(Currency.getInstance("USD"), promoCode.getCurrency());
             assertEquals(10, promoCode.getUsesLeft());
-        } catch (PromoCodeBuilderException e) {
-            fail("PromoCodeBuilderException thrown: " + e.getMessage());
+        } catch (PromoCodeException e) {
+            fail("PromoCodeException thrown: " + e.getMessage());
         }
         System.out.println("PromoCodeBuilder test passed");
     }

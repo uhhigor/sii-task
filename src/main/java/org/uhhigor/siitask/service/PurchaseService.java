@@ -3,7 +3,7 @@ package org.uhhigor.siitask.service;
 import org.springframework.stereotype.Service;
 import org.uhhigor.siitask.builder.PurchaseBuilder;
 import org.uhhigor.siitask.exception.promocode.CurrenciesDoNotMatchException;
-import org.uhhigor.siitask.exception.purchase.PurchaseBuilderException;
+import org.uhhigor.siitask.exception.purchase.PurchaseException;
 import org.uhhigor.siitask.exception.purchase.PurchaseServiceException;
 import org.uhhigor.siitask.model.Product;
 import org.uhhigor.siitask.model.PromoCode;
@@ -33,8 +33,8 @@ public class PurchaseService {
                     .date(new Date())
                     .build();
             return purchaseRepository.save(purchase);
-        } catch (PurchaseBuilderException e) {
-            throw new PurchaseServiceException("Error while creating purchase: " + e.getMessage(), e);
+        } catch (PurchaseException e) {
+            throw new PurchaseServiceException("Error while finalizing purchase: " + e.getMessage(), e);
         }
     }
 
@@ -52,11 +52,10 @@ public class PurchaseService {
                     .currency(currency)
                     .date(new Date())
                     .discount(promoCode.getDiscountAmount())
-                    .regularPrice(regularPrice)
                     .build();
             return purchaseRepository.save(purchase);
-        } catch (PurchaseBuilderException e) {
-            throw new PurchaseServiceException("Error while creating purchase: " + e.getMessage(), e);
+        } catch (PurchaseException e) {
+            throw new PurchaseServiceException("Error while finalizing purchase: " + e.getMessage(), e);
         }
     }
 }

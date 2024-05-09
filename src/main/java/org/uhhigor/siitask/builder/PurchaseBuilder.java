@@ -1,6 +1,6 @@
 package org.uhhigor.siitask.builder;
 
-import org.uhhigor.siitask.exception.purchase.PurchaseBuilderException;
+import org.uhhigor.siitask.exception.purchase.*;
 import org.uhhigor.siitask.model.Product;
 import org.uhhigor.siitask.model.Purchase;
 
@@ -12,74 +12,62 @@ public class PurchaseBuilder {
     private Product product;
     private Currency currency;
     private Double discount;
-    private Double regularPrice;
 
-    public PurchaseBuilder date(Date date) throws PurchaseBuilderException {
+    public PurchaseBuilder date(Date date) throws PurchaseDateInvalidException {
         if(date == null) {
-            throw new PurchaseBuilderException("Date cannot be null");
+            throw new PurchaseDateInvalidException("Date cannot be null");
         }
         if(date.after(new Date())) {
-            throw new PurchaseBuilderException("Date cannot be in the future");
+            throw new PurchaseDateInvalidException("Date cannot be in the future");
         }
         this.date = date;
         return this;
     }
 
-    public PurchaseBuilder product(Product product) throws PurchaseBuilderException {
+    public PurchaseBuilder product(Product product) throws PurchaseProductNullException {
         if(product == null) {
-            throw new PurchaseBuilderException("Product cannot be null");
+            throw new PurchaseProductNullException("Product cannot be null");
         }
         this.product = product;
         return this;
     }
 
 
-    public PurchaseBuilder currency(Currency currency) throws PurchaseBuilderException {
+    public PurchaseBuilder currency(Currency currency) throws PurchaseCurrencyNullException {
         if(currency == null) {
-            throw new PurchaseBuilderException("Currency cannot be null");
+            throw new PurchaseCurrencyNullException("Currency cannot be null");
         }
         this.currency = currency;
         return this;
     }
 
-    public PurchaseBuilder discount(Double discount) throws PurchaseBuilderException {
+    public PurchaseBuilder discount(Double discount) throws PurchaseDiscountInvalidException {
         if(discount == null || discount < 0) {
-            throw new PurchaseBuilderException("Discount must be greater than or equal to 0");
+            throw new PurchaseDiscountInvalidException("Discount must be greater than or equal to 0");
         }
         this.discount = discount;
         return this;
     }
 
-    public PurchaseBuilder regularPrice(Double regularPrice) throws PurchaseBuilderException {
-        if(regularPrice == null || regularPrice <= 0) {
-            throw new PurchaseBuilderException("Regular price must be greater than 0");
-        }
-        this.regularPrice = regularPrice;
-        return this;
-    }
-
-    public Purchase build() throws PurchaseBuilderException {
+    public Purchase build() throws PurchaseException {
         Purchase purchase = new Purchase();
 
         if(date == null) {
-            throw new PurchaseBuilderException("Date cannot be null");
+            throw new PurchaseException("Date cannot be null");
         }
         purchase.setDate(date);
 
         if(product == null) {
-            throw new PurchaseBuilderException("Product cannot be null");
+            throw new PurchaseException("Product cannot be null");
         }
         purchase.setProduct(product);
 
         if(currency == null) {
-            throw new PurchaseBuilderException("Currency cannot be null");
+            throw new PurchaseException("Currency cannot be null");
         }
         purchase.setCurrency(currency);
 
-        if(regularPrice == null) {
-            throw new PurchaseBuilderException("Regular price cannot be null");
-        }
-        purchase.setRegularPrice(regularPrice);
+        purchase.setRegularPrice(product.getProductPriceByCurrency(currency).getPrice());
 
         if(discount == null) {
             discount = 0.0;
