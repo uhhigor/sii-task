@@ -3,14 +3,16 @@ package org.uhhigor.siitask.service;
 import org.springframework.stereotype.Service;
 import org.uhhigor.siitask.builder.ProductBuilder;
 import org.uhhigor.siitask.builder.ProductPriceBuilder;
-import org.uhhigor.siitask.exception.product.*;
+import org.uhhigor.siitask.exception.product.ProductException;
+import org.uhhigor.siitask.exception.product.ProductNotFoundException;
+import org.uhhigor.siitask.exception.product.ProductPriceException;
+import org.uhhigor.siitask.exception.product.ProductServiceException;
 import org.uhhigor.siitask.model.Product;
 import org.uhhigor.siitask.model.ProductPrice;
 import org.uhhigor.siitask.repository.ProductPriceRepository;
 import org.uhhigor.siitask.repository.ProductRepository;
 
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.List;
 
 @Service
@@ -26,12 +28,6 @@ public class ProductService {
     public List<Product> getProducts() {
         List<Product> result = new ArrayList<>();
         productRepository.findAll().forEach(result::add);
-        return result;
-    }
-
-    public List<Product> getProductsByIds(List<Long> ids) {
-        List<Product> result = new ArrayList<>();
-        productRepository.findAllById(ids).forEach(result::add);
         return result;
     }
 

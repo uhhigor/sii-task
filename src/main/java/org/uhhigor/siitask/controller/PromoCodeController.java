@@ -76,10 +76,6 @@ public class PromoCodeController {
             this.promoCode = new PromoCodeData(promoCode);
         }
 
-        public PromoCodeResponse(String message) {
-            this.message = message;
-        }
-
         public PromoCodeResponse(PromoCode promoCode) {
             this.promoCode = new PromoCodeData(promoCode);
         }

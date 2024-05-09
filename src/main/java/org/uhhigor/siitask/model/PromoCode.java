@@ -2,7 +2,6 @@ package org.uhhigor.siitask.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.uhhigor.siitask.util.CurrencyConverter;
 
