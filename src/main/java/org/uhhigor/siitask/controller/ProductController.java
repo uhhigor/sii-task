@@ -62,8 +62,7 @@ public class ProductController {
             ProductResponse response = new ProductResponse("Product updated successfully", List.of(product));
             return ResponseEntity.ok(response);
         } catch (ProductServiceException e) {
-            ProductResponse response = new ProductResponse("Failed to update product: " + e.getMessage(), null);
-            return ResponseEntity.badRequest().body(response);
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -85,8 +84,7 @@ public class ProductController {
             ProductResponse response = new ProductResponse("Product deleted successfully", null);
             return ResponseEntity.ok(response);
         } catch (ProductNotFoundException e) {
-            ProductResponse response = new ProductResponse("Product not found", null);
-            return ResponseEntity.badRequest().body(response);
+            return ResponseEntity.notFound().build();
         }
     }
 
