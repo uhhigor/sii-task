@@ -32,4 +32,6 @@ public class PromoCode {
 
     @Column(nullable = false)
     private Integer usesLeft;
+
+    private Integer timesUsed;
 }

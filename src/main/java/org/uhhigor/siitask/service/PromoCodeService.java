@@ -59,6 +59,7 @@ public class PromoCodeService {
             throw new PromoCodeUsesInvalidException("Promo code uses limit reached");
         }
         promoCode.setUsesLeft(promoCode.getUsesLeft() - 1);
+        promoCode.setTimesUsed(promoCode.getTimesUsed() + 1);
         promoCodeRepository.save(promoCode);
     }
 }

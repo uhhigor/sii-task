@@ -91,12 +91,15 @@ public class PromoCodeController {
             private String currency;
             private Integer usesLeft;
 
+            private Integer timesUsed;
+
             public PromoCodeData(PromoCode promoCode) {
                 this.code = promoCode.getCode();
                 this.expirationDate = promoCode.getExpirationDate();
                 this.discountAmount = promoCode.getDiscountAmount();
                 this.currency = promoCode.getCurrency().getCurrencyCode();
                 this.usesLeft = promoCode.getUsesLeft();
+                this.timesUsed = promoCode.getTimesUsed();
             }
         }
     }
