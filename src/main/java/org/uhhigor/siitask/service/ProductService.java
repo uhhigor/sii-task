@@ -10,6 +10,7 @@ import org.uhhigor.siitask.repository.ProductPriceRepository;
 import org.uhhigor.siitask.repository.ProductRepository;
 
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
 
 @Service
@@ -34,25 +35,41 @@ public class ProductService {
         return result;
     }
 
-    public Product addProduct(Product.ProductDto productDto) throws ProductServiceException {
-        List<ProductPrice> productPrices = savePricesFromDto(productDto.getPrices());
+    public ProductPrice addProductPrice(double price, String currency) throws ProductServiceException {
         try {
-            Product product;
-            if(!productDto.getDescription().isEmpty()) {
-                product = new ProductBuilder()
-                        .name(productDto.getName())
-                        .description(productDto.getDescription())
-                        .prices(productPrices)
-                        .build();
-            } else {
-                product = new ProductBuilder()
-                        .name(productDto.getName())
-                        .prices(productPrices)
-                        .build();
-            }
+            ProductPrice productPrice = new ProductPriceBuilder()
+                    .price(price)
+                    .currency(currency)
+                    .build();
+            return productPriceRepository.save(productPrice);
+        } catch (ProductPriceException e) {
+            throw new ProductServiceException("Error while adding new product price: " + e.getMessage(), e);
+        }
+    }
+
+    public Product addProduct(String name, List<ProductPrice> prices) throws ProductServiceException {
+        try {
+            Product product = new ProductBuilder()
+                    .name(name)
+                    .prices(prices)
+                    .build();
             return productRepository.save(product);
         } catch (ProductException e) {
-            productPriceRepository.deleteAll(productPrices);
+            productPriceRepository.deleteAll(prices);
+            throw new ProductServiceException("Error while adding new product: " + e.getMessage(), e);
+        }
+    }
+
+    public Product addProduct(String name, String description, List<ProductPrice> prices) throws ProductServiceException {
+        try {
+            Product product = new ProductBuilder()
+                            .name(name)
+                            .description(description)
+                            .prices(prices)
+                            .build();
+            return productRepository.save(product);
+        } catch (ProductException e) {
+            productPriceRepository.deleteAll(prices);
             throw new ProductServiceException("Error while adding new product: " + e.getMessage(), e);
         }
     }
