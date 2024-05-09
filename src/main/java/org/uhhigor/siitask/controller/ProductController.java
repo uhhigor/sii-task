@@ -74,8 +74,7 @@ public class ProductController {
             ProductResponse response = new ProductResponse("Product found", List.of(product));
             return ResponseEntity.ok(response);
         } catch (ProductNotFoundException e) {
-            ProductResponse response = new ProductResponse("Product not found", null);
-            return ResponseEntity.badRequest().body(response);
+            return ResponseEntity.notFound().build();
         }
     }
 

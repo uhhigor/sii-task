@@ -65,6 +65,8 @@ public class ProductService {
     }
 
     public Product updateProduct(Long id, String name, String description, List<ProductPrice> prices) throws ProductServiceException {
+        System.out.println("Updating product with id: " + id);
+        System.out.println(getProducts());
         Product product = getProductById(id);
         product.setName(name);
         product.setDescription(description);
