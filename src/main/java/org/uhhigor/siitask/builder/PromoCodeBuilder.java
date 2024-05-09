@@ -1,6 +1,6 @@
 package org.uhhigor.siitask.builder;
 
-import org.uhhigor.siitask.exception.promocode.PromoCodeBuilderException;
+import org.uhhigor.siitask.exception.promocode.*;
 import org.uhhigor.siitask.model.PromoCode;
 
 import java.util.Currency;
@@ -13,65 +13,65 @@ public class PromoCodeBuilder {
     private Currency currency;
     private Integer usesLeft;
 
-    public PromoCodeBuilder code(String code) throws PromoCodeBuilderException {
+    public PromoCodeBuilder code(String code) throws PromoCodeIncorrectException {
         if(code == null) {
-            throw new PromoCodeBuilderException("Code cannot be null");
+            throw new PromoCodeIncorrectException("Code cannot be null");
         }
         if(code.length() < 3 || code.length() > 24){
-            throw new PromoCodeBuilderException("Code length must be between 3 and 24 characters");
+            throw new PromoCodeIncorrectException("Code length must be between 3 and 24 characters");
         }
         if(!code.matches("^[a-zA-Z0-9]*$")) {
-            throw new PromoCodeBuilderException("Code must contain only alphanumeric characters");
+            throw new PromoCodeIncorrectException("Code must contain only alphanumeric characters");
         }
         this.code = code;
         return this;
     }
 
-    public PromoCodeBuilder expirationDate(Date expirationDate) throws PromoCodeBuilderException {
+    public PromoCodeBuilder expirationDate(Date expirationDate) throws PromoCodeExpirationDateInvalidException {
         if(expirationDate == null || expirationDate.before(new Date())) {
-            throw new PromoCodeBuilderException("Expiration date cannot be null or in the past");
+            throw new PromoCodeExpirationDateInvalidException("Expiration date cannot be null or in the past");
         }
         this.expirationDate = expirationDate;
         return this;
     }
 
-    public PromoCodeBuilder discountAmount(Double discountAmount) throws PromoCodeBuilderException {
+    public PromoCodeBuilder discountAmount(Double discountAmount) throws PromoCodeDiscountInvalidException {
         if(discountAmount == null || discountAmount <= 0) {
-            throw new PromoCodeBuilderException("Discount amount must be greater than 0");
+            throw new PromoCodeDiscountInvalidException("Discount amount must be greater than 0");
         }
         this.discountAmount = discountAmount;
         return this;
     }
 
-    public PromoCodeBuilder currency(String currencyCode) throws PromoCodeBuilderException {
+    public PromoCodeBuilder currency(String currencyCode) throws PromoCodeCurrencyInvalidException {
         try {
             this.currency = Currency.getInstance(currencyCode);
         } catch (IllegalArgumentException e) {
-            throw new PromoCodeBuilderException("Currency code is invalid");
+            throw new PromoCodeCurrencyInvalidException("Currency code is invalid: " + currencyCode);
         }
         return this;
     }
 
-    public PromoCodeBuilder uses(Integer uses) throws PromoCodeBuilderException {
+    public PromoCodeBuilder uses(Integer uses) throws PromoCodeUsesInvalidException {
         if(uses == null || uses <= 0) {
-            throw new PromoCodeBuilderException("Uses must be greater than 0");
+            throw new PromoCodeUsesInvalidException("Uses must be greater than 0");
         }
         this.usesLeft = uses;
         return this;
     }
 
-    public PromoCode build() throws PromoCodeBuilderException {
+    public PromoCode build() throws PromoCodeException {
         if(expirationDate == null) {
-            throw new PromoCodeBuilderException("Expiration date is required");
+            throw new PromoCodeException("Expiration date is required");
         }
         if(discountAmount == null) {
-            throw new PromoCodeBuilderException("Discount amount is required");
+            throw new PromoCodeException("Discount amount is required");
         }
         if(currency == null) {
-            throw new PromoCodeBuilderException("Currency is required");
+            throw new PromoCodeException("Currency is required");
         }
         if(usesLeft == null) {
-            throw new PromoCodeBuilderException("Uses is required");
+            throw new PromoCodeException("Uses is required");
         }
 
         PromoCode promoCode = new PromoCode();

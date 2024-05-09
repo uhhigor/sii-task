@@ -51,9 +51,9 @@ public class ProductService {
                         .build();
             }
             return productRepository.save(product);
-        } catch (ProductBuilderException e) {
+        } catch (ProductException e) {
             productPriceRepository.deleteAll(productPrices);
-            throw new ProductServiceException("Invalid product", e);
+            throw new ProductServiceException("Error while adding new product: " + e.getMessage(), e);
         }
     }
 

@@ -3,9 +3,10 @@ package org.uhhigor.siitask.service;
 
 import org.springframework.stereotype.Service;
 import org.uhhigor.siitask.builder.PromoCodeBuilder;
-import org.uhhigor.siitask.exception.promocode.PromoCodeBuilderException;
+import org.uhhigor.siitask.exception.promocode.PromoCodeException;
 import org.uhhigor.siitask.exception.promocode.PromoCodeNotFoundException;
 import org.uhhigor.siitask.exception.promocode.PromoCodeServiceException;
+import org.uhhigor.siitask.exception.promocode.PromoCodeUsesInvalidException;
 import org.uhhigor.siitask.model.PromoCode;
 import org.uhhigor.siitask.repository.PromoCodeRepository;
 
@@ -39,7 +40,7 @@ public class PromoCodeService {
                     .uses(promoCodeDto.getUses())
                     .build();
             return promoCodeRepository.save(promoCode);
-        } catch (PromoCodeBuilderException e) {
+        } catch (PromoCodeException e) {
             throw new PromoCodeServiceException("Error while creating promo code: " + e.getMessage());
         }
     }
@@ -52,7 +53,10 @@ public class PromoCodeService {
         return promoCodeRepository.existsByCode(code);
     }
 
-    public void usePromoCode(PromoCode promoCode) {
+    public void usePromoCode(PromoCode promoCode) throws PromoCodeUsesInvalidException {
+        if(promoCode.getUsesLeft() <= 0) {
+            throw new PromoCodeUsesInvalidException("Promo code uses limit reached");
+        }
         promoCode.setUsesLeft(promoCode.getUsesLeft() - 1);
         promoCodeRepository.save(promoCode);
     }

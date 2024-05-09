@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.uhhigor.siitask.exception.product.ProductNotFoundException;
 import org.uhhigor.siitask.exception.promocode.CurrenciesDoNotMatchException;
 import org.uhhigor.siitask.exception.promocode.PromoCodeNotFoundException;
+import org.uhhigor.siitask.exception.promocode.PromoCodeUsesInvalidException;
 import org.uhhigor.siitask.exception.purchase.PurchaseServiceException;
 import org.uhhigor.siitask.model.Product;
 import org.uhhigor.siitask.model.PromoCode;
@@ -37,7 +38,7 @@ public class PurchaseController {
         this.promoCodeService = promoCodeService;
     }
     @PostMapping("/finalize")
-    public ResponseEntity<Object> finalizePurchase(@RequestBody PurchaseRequest purchaseRequest) {
+    public ResponseEntity<PurchaseResponse> finalizePurchase(@RequestBody PurchaseRequest purchaseRequest) {
         Product product;
         try {
             product = productService.getProductById(purchaseRequest.getProductId());
@@ -48,7 +49,7 @@ public class PurchaseController {
         try {
             currency = Currency.getInstance(purchaseRequest.getCurrencyCode());
         } catch (IllegalArgumentException | NullPointerException e) {
-            return ResponseEntity.badRequest().body("Invalid currency code");
+            return ResponseEntity.badRequest().body(new PurchaseResponse("Error while finalizing purchase. Invalid currency code: " + purchaseRequest.getCurrencyCode()));
         }
         PromoCode promoCode = null;
         if(!purchaseRequest.getPromoCode().isEmpty()) {
@@ -64,31 +65,40 @@ public class PurchaseController {
             if(promoCode == null) {
                 purchase = purchaseService.finalizePurchase(product, currency);
             } else {
-                purchase = purchaseService.finalizePurchase(product, currency, promoCode);
                 promoCodeService.usePromoCode(promoCode);
+                purchase = purchaseService.finalizePurchase(product, currency, promoCode);
             }
-            return ResponseEntity.ok(new PurchaseResponse(purchase));
-        } catch (PurchaseServiceException | CurrenciesDoNotMatchException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.ok(new PurchaseResponse("Purchase successful", purchase));
+        } catch (PurchaseServiceException | CurrenciesDoNotMatchException | PromoCodeUsesInvalidException e) {
+            return ResponseEntity.badRequest().body(new PurchaseResponse("Error while finalizing purchase: " + e.getMessage()));
         }
     }
     @Getter
     @NoArgsConstructor
     public static class PurchaseResponse {
-        private Date date;
-        private Long productId;
-        private Double regularPrice;
-        private Double discountApplied;
-        private Double finalPrice;
-        private String currencyCode;
+        private String message;
+        private PurchaseData purchase;
 
-        public PurchaseResponse(Purchase purchase) {
-            this.date = purchase.getDate();
-            this.productId = purchase.getProduct().getId();
-            this.regularPrice = purchase.getRegularPrice();
-            this.discountApplied = purchase.getDiscountApplied();
-            this.finalPrice = purchase.getFinalPrice();
-            this.currencyCode = purchase.getCurrency().getCurrencyCode();
+        private static class PurchaseData {
+            private Date date;
+            private Long productId;
+            private Double regularPrice;
+            private Double discountApplied;
+            private String currencyCode;
+        }
+
+        public PurchaseResponse(String message) {
+            this.message = message;
+        }
+
+        public PurchaseResponse(String message, Purchase purchase) {
+            this.message = message;
+            this.purchase = new PurchaseData();
+            this.purchase.date = purchase.getDate();
+            this.purchase.productId = purchase.getProduct().getId();
+            this.purchase.regularPrice = purchase.getRegularPrice();
+            this.purchase.discountApplied = purchase.getDiscountApplied();
+            this.purchase.currencyCode = purchase.getCurrency().getCurrencyCode();
         }
     }
 

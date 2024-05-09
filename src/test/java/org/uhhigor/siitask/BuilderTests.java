@@ -6,8 +6,8 @@ import org.uhhigor.siitask.builder.ProductBuilder;
 import org.uhhigor.siitask.builder.ProductPriceBuilder;
 import org.uhhigor.siitask.builder.PromoCodeBuilder;
 import org.uhhigor.siitask.builder.PurchaseBuilder;
-import org.uhhigor.siitask.exception.product.ProductBuilderException;
-import org.uhhigor.siitask.exception.promocode.PromoCodeBuilderException;
+import org.uhhigor.siitask.exception.product.ProductException;
+import org.uhhigor.siitask.exception.product.ProductPriceException;
 import org.uhhigor.siitask.exception.purchase.PurchaseBuilderException;
 import org.uhhigor.siitask.model.ProductPrice;
 import org.uhhigor.siitask.model.PromoCode;
@@ -26,9 +26,9 @@ public class BuilderTests {
 
     @Test
     public void testProductPriceBuilder() {
-        assertThrowsExactly(ProductPriceBuilderException.class, () -> new ProductPriceBuilder().build());
+        assertThrowsExactly(ProductPriceException.class, () -> new ProductPriceBuilder().build());
 
-        assertThrowsExactly(ProductPriceBuilderException.class, () -> new ProductPriceBuilder()
+        assertThrowsExactly(ProductPriceException.class, () -> new ProductPriceBuilder()
                 .currency("Non existent currency code")
                 .build());
 
@@ -47,8 +47,8 @@ public class BuilderTests {
 
             assertEquals(200.0, productPrice1.getPrice());
             assertEquals(Currency.getInstance("EUR"), productPrice1.getCurrency());
-        } catch (ProductPriceBuilderException e) {
-            fail("ProductPriceBuilderException thrown");
+        } catch (ProductPriceException e) {
+            fail("ProductPriceException thrown: " + e.getMessage());
         }
         System.out.println("ProductPriceBuilder test passed");
     }
@@ -72,10 +72,10 @@ public class BuilderTests {
             assertEquals("Example product name", product.getName());
             assertEquals("Example description", product.getDescription());
             assertEquals(List.of(productPrice), product.getPrices());
-        } catch (ProductPriceBuilderException e) {
-            fail("ProductPriceBuilderException thrown");
-        } catch (ProductBuilderException e) {
-            fail("ProductBuilderException thrown");
+        } catch (ProductPriceException e) {
+            fail("ProductPriceException thrown: " + e.getMessage());
+        } catch (ProductException e) {
+            fail("ProductBuilderException thrown: " + e.getMessage());
         }
         System.out.println("ProductBuilder test passed");
     }
@@ -91,36 +91,20 @@ public class BuilderTests {
                 .expirationDate(new Date(System.currentTimeMillis() - 1000)));
 
         try {
-            Product product = new ProductBuilder()
-                    .name("Example product name")
-                    .description("Example description")
-                    .prices(List.of(new ProductPriceBuilder()
-                            .currency("USD")
-                            .price(100.0)
-                            .build()))
-                    .build();
-
             PromoCode promoCode = new PromoCodeBuilder()
                     .code("TEST")
                     .expirationDate(new Date(System.currentTimeMillis() + 1000))
                     .discountAmount(10.0)
                     .currency("USD")
                     .uses(10)
-                    .eligibleProducts(List.of(product))
                     .build();
 
             assertEquals("TEST", promoCode.getCode());
             assertEquals(10.0, promoCode.getDiscountAmount());
             assertEquals(Currency.getInstance("USD"), promoCode.getCurrency());
             assertEquals(10, promoCode.getUsesLeft());
-            assertEquals(List.of(product), promoCode.getEligibleProducts());
-
-        } catch (ProductPriceBuilderException e) {
-            fail("ProductPriceBuilderException thrown");
-        } catch (ProductBuilderException e) {
-            fail("ProductBuilderException thrown");
         } catch (PromoCodeBuilderException e) {
-            fail("PromoCodeBuilderException thrown");
+            fail("PromoCodeBuilderException thrown: " + e.getMessage());
         }
         System.out.println("PromoCodeBuilder test passed");
     }
