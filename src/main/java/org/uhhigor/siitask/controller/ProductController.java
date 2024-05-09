@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.uhhigor.siitask.exception.product.ProductNotFoundException;
 import org.uhhigor.siitask.exception.product.ProductServiceException;
 import org.uhhigor.siitask.model.Product;
+import org.uhhigor.siitask.model.ProductPrice;
 import org.uhhigor.siitask.service.ProductService;
 
 import java.util.ArrayList;
@@ -26,17 +27,15 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<ProductResponse> getProducts() {
         List<Product> products = productService.getProducts();
-        List<Product.ProductDto> result = new ArrayList<>();
-        products.forEach(product -> result.add(new Product.ProductDto(product)));
-        ProductResponse response = new ProductResponse(result.isEmpty() ? "No products found" : result.size() + " products found", result);
+        ProductResponse response = new ProductResponse(products.isEmpty() ? "No products found" : products.size() + " products found", products);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<ProductResponse> addProduct(@RequestBody Product.ProductDto productDto) {
+    public ResponseEntity<ProductResponse> addProduct(@RequestBody ProductRequest productRequest) {
         try {
             Product product = productService.addProduct(productDto);
-            ProductResponse response = new ProductResponse("Product added successfully", List.of(new Product.ProductDto(product)));
+            ProductResponse response = new ProductResponse("Product added successfully", List.of(product));
             return ResponseEntity.ok(response);
         } catch (ProductServiceException e) {
             ProductResponse response = new ProductResponse("Failed to add product: " + e.getMessage(), null);
@@ -45,10 +44,10 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponse> updateProduct(@RequestBody Product.ProductDto productDto, @PathVariable Long id) {
+    public ResponseEntity<ProductResponse> updateProduct(@RequestBody ProductRequest productRequest, @PathVariable Long id) {
         try {
-            Product product = productService.updateProduct(productDto, id);
-            ProductResponse response = new ProductResponse("Product updated successfully", List.of(new Product.ProductDto(product)));
+            Product product = productService.updateProduct(productRequest, id);
+            ProductResponse response = new ProductResponse("Product updated successfully", List.of(product));
             return ResponseEntity.ok(response);
         } catch (ProductServiceException e) {
             ProductResponse response = new ProductResponse("Failed to update product: " + e.getMessage(), null);
@@ -82,10 +81,61 @@ public class ProductController {
 
     @Getter
     @NoArgsConstructor
-    @AllArgsConstructor
     public static class ProductResponse {
         private String message;
-        private List<Product.ProductDto> product;
+        private List<ProductData> products;
+
+        ProductResponse(String message, List<Product> products) {
+            this.message = message;
+            this.products = new ArrayList<>();
+            if(products != null) {
+                products.forEach(product -> this.products.add(new ProductData(product)));
+            }
+        }
+
+        @Getter
+        @NoArgsConstructor
+        static class ProductData {
+            private String name;
+            private String description;
+            private List<ProductPriceData> prices;
+
+            ProductData(Product product) {
+                this.name = product.getName();
+                this.description = product.getDescription();
+                this.prices = new ArrayList<>();
+                product.getPrices().forEach(price -> this.prices.add(new ProductPriceData(price)));
+            }
+
+            @Getter
+            @NoArgsConstructor
+            static class ProductPriceData {
+                private Double price;
+                private String currency;
+
+                ProductPriceData(ProductPrice price) {
+                    this.price = price.getPrice();
+                    this.currency = price.getCurrency().getCurrencyCode();
+                }
+            }
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ProductRequest {
+        private String name;
+        private String description;
+        private List<ProductPriceData> prices;
+
+        @Getter
+        @NoArgsConstructor
+        @AllArgsConstructor
+        static class ProductPriceData {
+            private Double price;
+            private String currency;
+        }
     }
 
 }

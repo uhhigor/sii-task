@@ -22,16 +22,4 @@ public class ProductPrice {
     @Convert(converter = CurrencyConverter.class)
     @Column(nullable = false)
     private Currency currency;
-
-    @Getter
-    @NoArgsConstructor
-    public static class ProductPriceDto {
-        private Double price;
-        private String currency;
-
-        public ProductPriceDto(ProductPrice productPrice) {
-            this.price = productPrice.getPrice();
-            this.currency = productPrice.getCurrency().getCurrencyCode();
-        }
-    }
 }
