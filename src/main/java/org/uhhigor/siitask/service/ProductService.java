@@ -46,20 +46,6 @@ public class ProductService {
             throw new ProductServiceException("Error while adding new product price: " + e.getMessage(), e);
         }
     }
-
-    public Product addProduct(String name, List<ProductPrice> prices) throws ProductServiceException {
-        try {
-            Product product = new ProductBuilder()
-                    .name(name)
-                    .prices(prices)
-                    .build();
-            return productRepository.save(product);
-        } catch (ProductException e) {
-            productPriceRepository.deleteAll(prices);
-            throw new ProductServiceException("Error while adding new product: " + e.getMessage(), e);
-        }
-    }
-
     public Product addProduct(String name, String description, List<ProductPrice> prices) throws ProductServiceException {
         try {
             Product product = new ProductBuilder()
@@ -78,40 +64,16 @@ public class ProductService {
         return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product not found"));
     }
 
-    public Product updateProduct(Product.ProductDto productDto, Long id) throws ProductServiceException {
+    public Product updateProduct(Long id, String name, String description, List<ProductPrice> prices) throws ProductServiceException {
         Product product = getProductById(id);
-        product.setName(productDto.getName());
-        product.setDescription(productDto.getDescription());
+        product.setName(name);
+        product.setDescription(description);
 
         List<ProductPrice> productPrices = product.getPrices();
-        product.setPrices(null);
         productPriceRepository.deleteAll(productPrices);
+        product.setPrices(prices);
 
-        try {
-            productPrices = savePricesFromDto(productDto.getPrices());
-        } catch (ProductServiceException e) {
-            throw new ProductServiceException("Error while updating product: " + e.getMessage(), e);
-        }
-        product.setPrices(productPrices);
         return productRepository.save(product);
-    }
-
-    private List<ProductPrice> savePricesFromDto(List<ProductPrice.ProductPriceDto> productPriceDtos) throws ProductServiceException {
-        List<ProductPrice> prices = new ArrayList<>();
-        for(ProductPrice.ProductPriceDto priceDto : productPriceDtos) {
-            try {
-                prices.add(new ProductPriceBuilder()
-                        .currency(priceDto.getCurrency())
-                        .price(priceDto.getPrice())
-                        .build());
-            } catch (ProductPriceException e) {
-                throw new ProductServiceException("Error while saving product prices: " + e.getMessage(), e);
-            }
-        }
-        Iterable<ProductPrice> newProductPrices = productPriceRepository.saveAll(prices);
-        List<ProductPrice> result = new ArrayList<>();
-        newProductPrices.forEach(result::add);
-        return result;
     }
 
     public void deleteProduct(Long id) throws ProductNotFoundException {

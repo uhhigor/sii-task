@@ -34,7 +34,7 @@ public class PurchaseService {
                     .build();
             return purchaseRepository.save(purchase);
         } catch (PurchaseException e) {
-            throw new PurchaseServiceException("Error while finalizing purchase: " + e.getMessage(), e);
+            throw new PurchaseServiceException("Error while finalizing purchase: " + e.getMessage());
         }
     }
 
@@ -55,7 +55,7 @@ public class PurchaseService {
                     .build();
             return purchaseRepository.save(purchase);
         } catch (PurchaseException e) {
-            throw new PurchaseServiceException("Error while finalizing purchase: " + e.getMessage(), e);
+            throw new PurchaseServiceException("Error while finalizing purchase: " + e.getMessage());
         }
     }
 }

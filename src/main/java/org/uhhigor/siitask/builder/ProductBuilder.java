@@ -19,10 +19,7 @@ public class ProductBuilder {
         return this;
     }
 
-    public ProductBuilder description(String description) throws ProductDescriptionIncorrectException {
-        if(description == null || description.isEmpty()) {
-            throw new ProductDescriptionIncorrectException("Description cannot be empty");
-        }
+    public ProductBuilder description(String description) {
         this.description = description;
         return this;
     }

@@ -41,12 +41,5 @@ public class PromoCode {
         private Double discountAmount;
         private String currency;
         private Integer uses;
-        public PromoCodeDto(PromoCode promoCode) {
-            this.code = promoCode.getCode();
-            this.expirationDate = promoCode.getExpirationDate();
-            this.discountAmount = promoCode.getDiscountAmount();
-            this.currency = promoCode.getCurrency().getCurrencyCode();
-            this.uses = promoCode.getUsesLeft();
-        }
     }
 }

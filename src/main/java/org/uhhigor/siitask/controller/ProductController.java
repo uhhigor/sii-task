@@ -34,7 +34,12 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductResponse> addProduct(@RequestBody ProductRequest productRequest) {
         try {
-            Product product = productService.addProduct(productDto);
+            List<ProductPrice> prices = new ArrayList<>();
+            for (ProductRequest.ProductPriceData price : productRequest.getPrices()) {
+                ProductPrice productPrice = productService.addProductPrice(price.getPrice(), price.getCurrency());
+                prices.add(productPrice);
+            }
+            Product product = productService.addProduct(productRequest.getName(), productRequest.getDescription(), prices);
             ProductResponse response = new ProductResponse("Product added successfully", List.of(product));
             return ResponseEntity.ok(response);
         } catch (ProductServiceException e) {
@@ -46,7 +51,12 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponse> updateProduct(@RequestBody ProductRequest productRequest, @PathVariable Long id) {
         try {
-            Product product = productService.updateProduct(productRequest, id);
+            List<ProductPrice> prices = new ArrayList<>();
+            for (ProductRequest.ProductPriceData price : productRequest.getPrices()) {
+                ProductPrice productPrice = productService.addProductPrice(price.getPrice(), price.getCurrency());
+                prices.add(productPrice);
+            }
+            Product product = productService.updateProduct(id, productRequest.getName(), productRequest.getDescription(), prices);
             ProductResponse response = new ProductResponse("Product updated successfully", List.of(product));
             return ResponseEntity.ok(response);
         } catch (ProductServiceException e) {
@@ -59,7 +69,7 @@ public class ProductController {
     public ResponseEntity<ProductResponse> getProduct(@PathVariable Long id) {
         try {
             Product product = productService.getProductById(id);
-            ProductResponse response = new ProductResponse("Product found", List.of(new Product.ProductDto(product)));
+            ProductResponse response = new ProductResponse("Product found", List.of(product));
             return ResponseEntity.ok(response);
         } catch (ProductNotFoundException e) {
             ProductResponse response = new ProductResponse("Product not found", null);
