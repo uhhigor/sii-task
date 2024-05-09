@@ -35,6 +35,8 @@ public class ProductController {
     public ResponseEntity<ProductResponse> addProduct(@RequestBody ProductRequest productRequest) {
         try {
             List<ProductPrice> prices = new ArrayList<>();
+            System.out.println(productRequest.toString());
+            System.out.println(productRequest.getPrices());
             for (ProductRequest.ProductPriceData price : productRequest.getPrices()) {
                 ProductPrice productPrice = productService.addProductPrice(price.getPrice(), price.getCurrency());
                 prices.add(productPrice);
@@ -106,11 +108,13 @@ public class ProductController {
         @Getter
         @NoArgsConstructor
         static class ProductData {
+            private Long id;
             private String name;
             private String description;
             private List<ProductPriceData> prices;
 
-            ProductData(Product product) {
+            public ProductData(Product product) {
+                this.id = product.getId();
                 this.name = product.getName();
                 this.description = product.getDescription();
                 this.prices = new ArrayList<>();
@@ -119,11 +123,12 @@ public class ProductController {
 
             @Getter
             @NoArgsConstructor
+            @AllArgsConstructor
             static class ProductPriceData {
                 private Double price;
                 private String currency;
 
-                ProductPriceData(ProductPrice price) {
+                public ProductPriceData(ProductPrice price) {
                     this.price = price.getPrice();
                     this.currency = price.getCurrency().getCurrencyCode();
                 }
@@ -142,7 +147,7 @@ public class ProductController {
         @Getter
         @NoArgsConstructor
         @AllArgsConstructor
-        static class ProductPriceData {
+        public static class ProductPriceData {
             private Double price;
             private String currency;
         }

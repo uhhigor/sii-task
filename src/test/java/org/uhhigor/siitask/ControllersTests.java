@@ -25,21 +25,35 @@ public class ControllersTests {
         void testCreateProduct() throws Exception {
             mockMvc.perform(post("/product")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content("{\"name\": \"Product1\", \"price\": 100.0, \"currency\": \"USD\"}"))
-                    .andExpectAll(status().isOk(), content()
+                    .content("""
+                            {
+                                "name": "Product1",
+                                "prices": [
+                                    {
+                                        "price": 100.0,
+                                        "currency": "USD"
+                                    }
+                                ]
+                            }
+                            """)
+                    ).andExpectAll(status().isOk(), content()
                             .json("""
                                     {
-                                        "message": "Product created successfully",
-                                        "product":{
-                                            "id": 1,
-                                            "name": "Product1",
-                                            "prices": [
-                                                {
-                                                    "price": 100.0,
-                                                    "currency": "USD"
-                                                }
-                                            ]
-                                        }
+                                        "message": "Product added successfully",
+                                        "products":
+                                        [
+                                            {
+                                                "id": 1,
+                                                "name": "Product1",
+                                                "description": null,
+                                                "prices": [
+                                                    {
+                                                        "price": 100.0,
+                                                        "currency": "USD"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                     """));
 

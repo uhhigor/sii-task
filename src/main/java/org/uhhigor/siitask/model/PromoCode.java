@@ -32,14 +32,4 @@ public class PromoCode {
 
     @Column(nullable = false)
     private Integer usesLeft;
-
-    @Getter
-    @NoArgsConstructor
-    public static class PromoCodeDto {
-        private String code;
-        private Date expirationDate;
-        private Double discountAmount;
-        private String currency;
-        private Integer uses;
-    }
 }

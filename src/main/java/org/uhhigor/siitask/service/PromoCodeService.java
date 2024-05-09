@@ -11,6 +11,7 @@ import org.uhhigor.siitask.model.PromoCode;
 import org.uhhigor.siitask.repository.PromoCodeRepository;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -27,17 +28,17 @@ public class PromoCodeService {
         return promoCodes;
     }
 
-    public PromoCode addPromoCode(PromoCode.PromoCodeDto promoCodeDto) throws PromoCodeServiceException {
-        if(codeExists(promoCodeDto.getCode())) {
+    public PromoCode addPromoCode(String code, Date expirationDate, double discountAmount, String currency, int uses) throws PromoCodeServiceException {
+        if(codeExists(code)) {
             throw new PromoCodeServiceException("Promo code with this code already exists");
         }
         try {
             PromoCode promoCode = new PromoCodeBuilder()
-                    .code(promoCodeDto.getCode())
-                    .expirationDate(promoCodeDto.getExpirationDate())
-                    .discountAmount(promoCodeDto.getDiscountAmount())
-                    .currency(promoCodeDto.getCurrency())
-                    .uses(promoCodeDto.getUses())
+                    .code(code)
+                    .expirationDate(expirationDate)
+                    .discountAmount(discountAmount)
+                    .currency(currency)
+                    .uses(uses)
                     .build();
             return promoCodeRepository.save(promoCode);
         } catch (PromoCodeException e) {
