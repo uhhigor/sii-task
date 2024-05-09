@@ -1,6 +1,7 @@
 package org.uhhigor.siitask.controller;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -32,9 +33,10 @@ public class DiscountController {
         this.productService = productService;
     }
 
-    @GetMapping("/product/{productId}/promo-code/{code}")
-    public ResponseEntity<Object> pgetDiscountPrice(@PathVariable Long productId, @PathVariable String code) {
-
+    @GetMapping("/product/{productId}/promo/{code}")
+    public ResponseEntity<DiscountPriceResponse> getDiscountPrice(@PathVariable Long productId, @PathVariable String code) {
+        System.out.println("productId = " + productId);
+        System.out.println("code = " + code);
         PromoCode promoCode;
         try {
             promoCode = promoCodeService.getByCode(code);
@@ -58,7 +60,8 @@ public class DiscountController {
 
     @NoArgsConstructor
     @AllArgsConstructor
-    static class DiscountPriceResponse {
+    @Getter
+    public static class DiscountPriceResponse {
         private double discountPrice;
 
         private String currency;

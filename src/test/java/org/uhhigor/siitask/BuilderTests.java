@@ -7,7 +7,6 @@ import org.uhhigor.siitask.builder.ProductPriceBuilder;
 import org.uhhigor.siitask.builder.PromoCodeBuilder;
 import org.uhhigor.siitask.builder.PurchaseBuilder;
 import org.uhhigor.siitask.exception.product.ProductBuilderException;
-import org.uhhigor.siitask.exception.product.ProductPriceBuilderException;
 import org.uhhigor.siitask.exception.promocode.PromoCodeBuilderException;
 import org.uhhigor.siitask.exception.purchase.PurchaseBuilderException;
 import org.uhhigor.siitask.model.ProductPrice;

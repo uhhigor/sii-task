@@ -3,10 +3,7 @@ package org.uhhigor.siitask.service;
 import org.springframework.stereotype.Service;
 import org.uhhigor.siitask.builder.ProductBuilder;
 import org.uhhigor.siitask.builder.ProductPriceBuilder;
-import org.uhhigor.siitask.exception.product.ProductBuilderException;
-import org.uhhigor.siitask.exception.product.ProductNotFoundException;
-import org.uhhigor.siitask.exception.product.ProductPriceBuilderException;
-import org.uhhigor.siitask.exception.product.ProductServiceException;
+import org.uhhigor.siitask.exception.product.*;
 import org.uhhigor.siitask.model.Product;
 import org.uhhigor.siitask.model.ProductPrice;
 import org.uhhigor.siitask.repository.ProductPriceRepository;
@@ -25,8 +22,10 @@ public class ProductService {
         this.productRepository = productRepository;
         this.productPriceRepository = productPriceRepository;
     }
-    public Iterable<Product> getProducts() {
-        return productRepository.findAll();
+    public List<Product> getProducts() {
+        List<Product> result = new ArrayList<>();
+        productRepository.findAll().forEach(result::add);
+        return result;
     }
 
     public List<Product> getProductsByIds(List<Long> ids) {
@@ -62,7 +61,7 @@ public class ProductService {
         return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product not found"));
     }
 
-    public Product updateProduct(Product.ProductDto productDto, Long id) throws ProductNotFoundException, ProductServiceException {
+    public Product updateProduct(Product.ProductDto productDto, Long id) throws ProductServiceException {
         Product product = getProductById(id);
         product.setName(productDto.getName());
         product.setDescription(productDto.getDescription());
@@ -71,7 +70,11 @@ public class ProductService {
         product.setPrices(null);
         productPriceRepository.deleteAll(productPrices);
 
-        productPrices = savePricesFromDto(productDto.getPrices());
+        try {
+            productPrices = savePricesFromDto(productDto.getPrices());
+        } catch (ProductServiceException e) {
+            throw new ProductServiceException("Error while updating product: " + e.getMessage(), e);
+        }
         product.setPrices(productPrices);
         return productRepository.save(product);
     }
@@ -84,8 +87,8 @@ public class ProductService {
                         .currency(priceDto.getCurrency())
                         .price(priceDto.getPrice())
                         .build());
-            } catch (ProductPriceBuilderException e) {
-                throw new ProductServiceException("Invalid product price", e);
+            } catch (ProductPriceException e) {
+                throw new ProductServiceException("Error while saving product prices: " + e.getMessage(), e);
             }
         }
         Iterable<ProductPrice> newProductPrices = productPriceRepository.saveAll(prices);

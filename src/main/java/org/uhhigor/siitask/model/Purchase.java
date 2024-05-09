@@ -30,9 +30,6 @@ public class Purchase {
     @Column(nullable = false)
     private Double discountApplied;
 
-    @Column(nullable = false)
-    private Double finalPrice;
-
     @Convert(converter = CurrencyConverter.class)
     @Column(nullable = false)
     private Currency currency;

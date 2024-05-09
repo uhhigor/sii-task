@@ -85,7 +85,6 @@ public class PurchaseBuilder {
             discount = 0.0;
         }
         purchase.setDiscountApplied(discount);
-        purchase.setFinalPrice(regularPrice - discount);
 
         return purchase;
     }
