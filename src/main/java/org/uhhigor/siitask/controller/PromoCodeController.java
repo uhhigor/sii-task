@@ -80,13 +80,15 @@ public class PromoCodeController {
             this.promoCode = new PromoCodeData(promoCode);
         }
 
+        @Getter
+        @NoArgsConstructor
+        @AllArgsConstructor
         static class PromoCodeData {
             private String code;
             private Date expirationDate;
             private Double discountAmount;
             private String currency;
             private Integer usesLeft;
-
             private Integer timesUsed;
 
             public PromoCodeData(PromoCode promoCode) {

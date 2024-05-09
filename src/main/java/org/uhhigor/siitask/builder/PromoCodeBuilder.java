@@ -80,6 +80,7 @@ public class PromoCodeBuilder {
         promoCode.setDiscountAmount(discountAmount);
         promoCode.setCurrency(currency);
         promoCode.setUsesLeft(usesLeft);
+        promoCode.setTimesUsed(0);
         return promoCode;
     }
 }
