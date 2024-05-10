@@ -507,4 +507,155 @@ public class PurchaseTests {
                 fail(e);
             }
             }
+
+            // Test 7: Test purchase controller with PERCENTAGE BASED promo code
+                // 1. Create a product with a price of 125 USD
+                // 2. Create a promo code with a discount of 15%, 1 use
+                // 3. Finalize the purchase with the product and the promo code
+
+            @Test
+            public void purchaseScenario8() {
+                try {
+                    mockMvc.perform(post("/product")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+
+                                    {
+                                    "name": "Product1",
+                                    "prices": [
+                                        {
+                                            "price": 125.0,
+                                            "currency": "USD"
+                                        }
+                                    ]
+                                }
+                                """)
+                    ).andExpectAll(status().isOk());
+
+                    mockMvc.perform(post("/promo-code")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                            {
+                                "code": "PROMO1",
+                                "expirationDate": "2025-12-31",
+                                "discountAmount": 15.0,
+                                "currency": "USD",
+                                "uses": 1,
+                                "type": "PERCENTAGE"
+                            }
+                            """))
+                            .andExpectAll(status().isOk());
+
+                    mockMvc.perform(post("/purchase/finalize")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                            {
+                                "productId": 1,
+                                "currencyCode": "USD",
+                                "promoCode": "PROMO1"
+                            }
+                            """))
+                            .andExpectAll(
+                                    status().isOk(),
+                                    jsonPath("$.message").value("Purchase successful"),
+                                    jsonPath("$.purchase.productId").value(1),
+                                    jsonPath("$.purchase.regularPrice").value(125),
+                                    jsonPath("$.purchase.discountApplied").value(18.75),
+                                    jsonPath("$.purchase.currencyCode").value("USD")
+                            );
+                } catch (Exception e) {
+                    fail(e);
+                }
+            }
+
+            // Test 8: Test purchase controller with PERCENTAGE BASED promo code and multiple uses
+                // 1. Create a product with a price of 172 USD
+                // 2. Create a promo code with a discount of 20%, 2 uses
+                // 3. Finalize the purchase with the product and the promo code twice
+                // 4. Check if promo code usage increased by 2, and available uses decreased by 2
+                // 5. Check if promo code is not usable anymore
+
+            @Test
+            public void purchaseScenario9() {
+                try {
+                    mockMvc.perform(post("/product")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+
+                                    {
+                                    "name": "Product1",
+                                    "prices": [
+                                        {
+                                            "price": 172.0,
+                                            "currency": "USD"
+                                        }
+                                    ]
+                                    }
+                                """)
+                    ).andExpectAll(status().isOk());
+
+                    mockMvc.perform(post("/promo-code")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("""
+
+                                            {
+                                "code": "PROMO1",
+                                "expirationDate": "2025-12-31",
+                                "discountAmount": 20.0,
+                                "currency": "USD",
+                                "uses": 2,
+                                "type": "PERCENTAGE"
+                            }
+                            """))
+                            .andExpectAll(status().isOk());
+
+                    mockMvc.perform(post("/purchase/finalize")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                            {
+                                "productId": 1,
+                                "currencyCode": "USD",
+                                "promoCode": "PROMO1"
+                            }
+                            """))
+                            .andExpect(status().isOk());
+
+                    mockMvc.perform(post("/purchase/finalize")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                            {
+                                "productId": 1,
+                                "currencyCode": "USD",
+                                "promoCode": "PROMO1"
+                            }
+                            """))
+                            .andExpect(status().isOk());
+
+                    mockMvc.perform(get("/promo-code/PROMO1"))
+                            .andExpectAll(
+                                    status().isOk(),
+                                    jsonPath("$.promoCodes[0].code").value("PROMO1"),
+                                    jsonPath("$.promoCodes[0].discountAmount").value(20),
+                                    jsonPath("$.promoCodes[0].currency").value("USD"),
+                                    jsonPath("$.promoCodes[0].usesLeft").value(0),
+                                    jsonPath("$.promoCodes[0].timesUsed").value(2)
+                            );
+
+                    mockMvc.perform(post("/purchase/finalize")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                            {
+                                "productId": 1,
+                                "currencyCode": "USD",
+                                "promoCode": "PROMO1"
+                            }
+                            """))
+                            .andExpectAll(
+                                    status().isBadRequest(),
+                                    jsonPath("$.message").value("Error while finalizing purchase: Error while getting discount price: Promo code has no uses left")
+                            );
+                } catch (Exception e) {
+                    fail(e);
+                }
+                }
 }

@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -162,5 +163,38 @@ public class PromoCodeTests {
                                 }
                                 """)
                         );
+    }
+
+    // Test 5: Creating percentage based promo code with invalid discount amount
+    @Test
+    public void promoCodeTest5()  {
+        try {
+            mockMvc.perform(post("/promo-code")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+
+                                    {
+                            "code": "TESTCODE6",
+                            "expirationDate": "2025-01-01",
+                            "discountAmount": 110.0,
+                            "currency": "USD",
+                            "uses": 10,
+                            "type": "PERCENTAGE"
+                        }
+                        """)
+                )
+                .andExpectAll(
+                        status().isBadRequest(),
+                        content().json("""
+                                     {
+                                    "message": "Error while creating promo code: Discount amount must be between 0 and 100 for percentage based promo codes",
+                                    "promoCodes": null
+                                }
+                                """)
+                        );
+
+        } catch (Exception e) {
+            fail(e);
+        }
     }
 }

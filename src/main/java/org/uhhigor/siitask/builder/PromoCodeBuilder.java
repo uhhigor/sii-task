@@ -91,6 +91,10 @@ public class PromoCodeBuilder {
             throw new PromoCodeException("Discount type is required");
         }
 
+        if(type == PromoCode.DiscountType.PERCENTAGE && discountAmount > 100) {
+            throw new PromoCodeDiscountInvalidException("Discount amount must be between 0 and 100 for percentage based promo codes");
+        }
+
         PromoCode promoCode = new PromoCode();
         promoCode.setCode(code);
         promoCode.setExpirationDate(expirationDate);
