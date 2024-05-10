@@ -1,6 +1,4 @@
 # Igor Bobrukiewicz - SII TASK FOR LAT
-## igor.bobrukiewicz@gmail.com
-## 666 173 216
 
 ## 1. About
 Java version: 21
