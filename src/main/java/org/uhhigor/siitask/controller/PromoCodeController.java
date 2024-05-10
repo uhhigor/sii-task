@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.uhhigor.siitask.builder.PromoCodeBuilder;
+import org.uhhigor.siitask.exception.promocode.PromoCodeException;
 import org.uhhigor.siitask.exception.promocode.PromoCodeNotFoundException;
 import org.uhhigor.siitask.exception.promocode.PromoCodeServiceException;
 import org.uhhigor.siitask.model.PromoCode;
@@ -43,16 +45,18 @@ public class PromoCodeController {
     @PostMapping
     public ResponseEntity<PromoCodeResponse> addPromoCode(@RequestBody PromoCodeRequest promoCodeRequest) {
         try {
-            PromoCode promoCode = promoCodeService.addPromoCode(
-                    promoCodeRequest.getCode(),
-                    promoCodeRequest.getExpirationDate(),
-                    promoCodeRequest.getDiscountAmount(),
-                    promoCodeRequest.getCurrency(),
-                    promoCodeRequest.getUses()
-            );
+            PromoCode promoCode = new PromoCodeBuilder()
+                    .code(promoCodeRequest.getCode())
+                    .expirationDate(promoCodeRequest.getExpirationDate())
+                    .discountAmount(promoCodeRequest.getDiscountAmount())
+                    .currency(promoCodeRequest.getCurrency())
+                    .uses(promoCodeRequest.getUses())
+                    .type(promoCodeRequest.getType())
+                    .build();
+            promoCode = promoCodeService.addPromoCode(promoCode);
             return ResponseEntity.ok(new PromoCodeResponse("Promo code added successfully", List.of(promoCode)));
-        } catch (PromoCodeServiceException | NullPointerException e) {
-            return ResponseEntity.badRequest().body(new PromoCodeResponse(e.getMessage()));
+        } catch (PromoCodeException e) {
+            return ResponseEntity.badRequest().body(new PromoCodeResponse("Error while creating promo code: " + e.getMessage()));
         }
     }
 
@@ -65,6 +69,7 @@ public class PromoCodeController {
         private Double discountAmount;
         private String currency;
         private Integer uses;
+        private String type;
     }
 
     @Getter
@@ -102,6 +107,7 @@ public class PromoCodeController {
             private String currency;
             private Integer usesLeft;
             private Integer timesUsed;
+            private String type;
 
             public PromoCodeData(PromoCode promoCode) {
                 this.code = promoCode.getCode();
@@ -110,6 +116,7 @@ public class PromoCodeController {
                 this.currency = promoCode.getCurrency().getCurrencyCode();
                 this.usesLeft = promoCode.getUsesLeft();
                 this.timesUsed = promoCode.getTimesUsed();
+                this.type = promoCode.getType().name();
             }
         }
     }

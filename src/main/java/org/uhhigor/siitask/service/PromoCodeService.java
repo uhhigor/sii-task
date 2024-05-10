@@ -28,23 +28,12 @@ public class PromoCodeService {
         return promoCodes;
     }
 
-    public PromoCode addPromoCode(String code, Date expirationDate, double discountAmount, String currency, int uses) throws PromoCodeServiceException {
-        if(codeExists(code)) {
+    public PromoCode addPromoCode(PromoCode promoCode) throws PromoCodeServiceException {
+        if(codeExists(promoCode.getCode())) {
             throw new PromoCodeServiceException("Promo code with this code already exists");
         }
-        try {
-            PromoCode promoCode = new PromoCodeBuilder()
-                    .code(code)
-                    .expirationDate(expirationDate)
-                    .discountAmount(discountAmount)
-                    .currency(currency)
-                    .uses(uses)
-                    .build();
             return promoCodeRepository.save(promoCode);
-        } catch (PromoCodeException e) {
-            throw new PromoCodeServiceException("Error while creating promo code: " + e.getMessage());
         }
-    }
 
     public PromoCode getByCode(String code) throws PromoCodeNotFoundException {
         return promoCodeRepository.findByCode(code).orElseThrow(() -> new PromoCodeNotFoundException("Promo code not found"));
@@ -56,7 +45,7 @@ public class PromoCodeService {
 
     public void usePromoCode(PromoCode promoCode) throws PromoCodeUsesInvalidException {
         if(promoCode.getUsesLeft() <= 0) {
-            throw new PromoCodeUsesInvalidException("Promo code uses limit reached");
+            throw new PromoCodeUsesInvalidException("Error while using promo code: Promo code uses limit reached");
         }
         promoCode.setUsesLeft(promoCode.getUsesLeft() - 1);
         promoCode.setTimesUsed(promoCode.getTimesUsed() + 1);

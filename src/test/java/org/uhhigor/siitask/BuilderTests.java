@@ -101,6 +101,7 @@ public class BuilderTests {
                     .discountAmount(10.0)
                     .currency("USD")
                     .uses(10)
+                    .type("FIXED")
                     .build();
 
             assertEquals("TEST", promoCode.getCode());

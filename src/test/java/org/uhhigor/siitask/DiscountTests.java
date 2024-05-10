@@ -76,7 +76,8 @@ public class DiscountTests {
                                 "expirationDate": "2025-01-01",
                                 "discountAmount": 10.0,
                                 "currency": "USD",
-                                "uses": 10
+                                "uses": 10,
+                                "type": "FIXED"
                             }
                             """)
                     ).andExpectAll(
@@ -179,7 +180,8 @@ public class DiscountTests {
                                 "expirationDate": "2025-01-01",
                                 "discountAmount": 110.0,
                                 "currency": "USD",
-                                "uses": 10
+                                "uses": 10,
+                                "type": "FIXED"
                             }
                             """)
                     ).andExpectAll(
@@ -283,7 +285,8 @@ public class DiscountTests {
                                 "expirationDate": "2025-01-01",
                                 "discountAmount": 10.0,
                                 "currency": "USD",
-                                "uses": 10
+                                "uses": 10,
+                                "type": "FIXED"
                             }
                             """)
                     ).andExpectAll(
@@ -321,7 +324,7 @@ public class DiscountTests {
                             status().isBadRequest(),
                             content().json("""
                                     {
-                                        "message": "Product currency does not match promo code currency",
+                                        "message": "Error while getting discount price: Product currency does not match promo code currency",
                                         "discountPrice": {
                                             "price": 100.0,
                                             "currency": "EUR"

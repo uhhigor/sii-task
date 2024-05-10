@@ -31,47 +31,36 @@ public class ProductService {
         return result;
     }
 
-    public ProductPrice addProductPrice(double price, String currency) throws ProductServiceException {
-        try {
-            ProductPrice productPrice = new ProductPriceBuilder()
-                    .price(price)
-                    .currency(currency)
-                    .build();
+    public ProductPrice addProductPrice(ProductPrice productPrice) {
             return productPriceRepository.save(productPrice);
-        } catch (ProductPriceException e) {
-            throw new ProductServiceException("Error while adding new product price: " + e.getMessage(), e);
-        }
     }
-    public Product addProduct(String name, String description, List<ProductPrice> prices) throws ProductServiceException {
-        try {
-            Product product = new ProductBuilder()
-                            .name(name)
-                            .description(description)
-                            .prices(prices)
-                            .build();
-            return productRepository.save(product);
-        } catch (ProductException e) {
-            productPriceRepository.deleteAll(prices);
-            throw new ProductServiceException("Error while adding new product: " + e.getMessage(), e);
-        }
+
+    public List<ProductPrice> addProductPrices(List<ProductPrice> productPrices) {
+        return (List<ProductPrice>) productPriceRepository.saveAll(productPrices);
+    }
+
+    public void deleteProductPrices(List<ProductPrice> prices) {
+        productPriceRepository.deleteAll(prices);
+    }
+    public Product addProduct(Product product) {
+        product.setPrices(addProductPrices(product.getPrices()));
+        return productRepository.save(product);
     }
 
     public Product getProductById(Long id) throws ProductNotFoundException {
         return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product not found"));
     }
 
-    public Product updateProduct(Long id, String name, String description, List<ProductPrice> prices) throws ProductServiceException {
-        System.out.println("Updating product with id: " + id);
-        System.out.println(getProducts());
-        Product product = getProductById(id);
-        product.setName(name);
-        product.setDescription(description);
+    public Product updateProduct(Long id, Product product) throws ProductServiceException {
+        Product originalProduct = getProductById(id);
+        originalProduct.setName(product.getName());
+        originalProduct.setDescription(product.getDescription());
+        System.out.println("Deleting prices");
+        deleteProductPrices(originalProduct.getPrices());
+        System.out.println("Adding prices");
+        originalProduct.setPrices(addProductPrices(product.getPrices()));
 
-        List<ProductPrice> productPrices = product.getPrices();
-        productPriceRepository.deleteAll(productPrices);
-        product.setPrices(prices);
-
-        return productRepository.save(product);
+        return productRepository.save(originalProduct);
     }
 
     public void deleteProduct(Long id) throws ProductNotFoundException {

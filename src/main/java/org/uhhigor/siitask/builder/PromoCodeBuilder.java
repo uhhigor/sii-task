@@ -13,6 +13,8 @@ public class PromoCodeBuilder {
     private Currency currency;
     private Integer usesLeft;
 
+    private PromoCode.DiscountType type;
+
     public PromoCodeBuilder code(String code) throws PromoCodeIncorrectException {
         if(code == null) {
             throw new PromoCodeIncorrectException("Code cannot be null");
@@ -60,6 +62,18 @@ public class PromoCodeBuilder {
         return this;
     }
 
+    public PromoCodeBuilder type(String type) throws PromoCodeIncorrectException {
+        if(type == null || type.isEmpty()) {
+            throw new PromoCodeIncorrectException("Type cannot be null or empty");
+        }
+        try {
+            this.type = PromoCode.DiscountType.valueOf(type);
+        } catch (IllegalArgumentException e) {
+            throw new PromoCodeIncorrectException("Type is invalid: " + type);
+        }
+        return this;
+    }
+
     public PromoCode build() throws PromoCodeException {
         if(expirationDate == null) {
             throw new PromoCodeException("Expiration date is required");
@@ -73,6 +87,9 @@ public class PromoCodeBuilder {
         if(usesLeft == null) {
             throw new PromoCodeException("Uses is required");
         }
+        if(type == null) {
+            throw new PromoCodeException("Discount type is required");
+        }
 
         PromoCode promoCode = new PromoCode();
         promoCode.setCode(code);
@@ -80,6 +97,7 @@ public class PromoCodeBuilder {
         promoCode.setDiscountAmount(discountAmount);
         promoCode.setCurrency(currency);
         promoCode.setUsesLeft(usesLeft);
+        promoCode.setType(type);
         promoCode.setTimesUsed(0);
         return promoCode;
     }

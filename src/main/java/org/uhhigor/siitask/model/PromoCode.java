@@ -33,4 +33,13 @@ public class PromoCode {
     private Integer usesLeft;
 
     private Integer timesUsed;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private DiscountType type;
+
+    public enum DiscountType {
+        PERCENTAGE,
+        FIXED
+    }
 }

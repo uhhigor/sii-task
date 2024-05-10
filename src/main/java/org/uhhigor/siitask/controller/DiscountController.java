@@ -5,10 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.uhhigor.siitask.exception.product.ProductNotFoundException;
-import org.uhhigor.siitask.exception.promocode.CurrenciesDoNotMatchException;
-import org.uhhigor.siitask.exception.promocode.PromoCodeExpiredException;
+import org.uhhigor.siitask.exception.promocode.PromoCodeException;
 import org.uhhigor.siitask.exception.promocode.PromoCodeNotFoundException;
 import org.uhhigor.siitask.model.Product;
 import org.uhhigor.siitask.model.ProductPrice;
@@ -40,12 +41,14 @@ public class DiscountController {
         try {
             promoCode = promoCodeService.getByCode(discountPriceRequest.getCode());
         } catch (PromoCodeNotFoundException e) {
+            System.out.println("Promo code not found");
             return ResponseEntity.notFound().build();
         }
         Product product;
         try {
             product = productService.getProductById(discountPriceRequest.getProductId());
         } catch (ProductNotFoundException e) {
+            System.out.println("Product not found");
             return ResponseEntity.notFound().build();
         }
         Currency currency = Currency.getInstance(discountPriceRequest.getCurrencyCode());
@@ -53,7 +56,7 @@ public class DiscountController {
         try {
             double discountPrice = discountPriceService.getDiscountPrice(product, promoCode);
             return ResponseEntity.ok(new DiscountPriceResponse(discountPrice, productPrice.getCurrency()));
-        } catch (PromoCodeExpiredException | CurrenciesDoNotMatchException e) {
+        } catch (PromoCodeException e) {
             return ResponseEntity.badRequest().body(new DiscountPriceResponse(e.getMessage(), productPrice.getPrice(), productPrice.getCurrency()));
         }
     }

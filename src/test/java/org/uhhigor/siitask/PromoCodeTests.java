@@ -28,7 +28,8 @@ public class PromoCodeTests {
                             "expirationDate": "2025-01-01",
                             "discountAmount": 10.0,
                             "currency": "USD",
-                            "uses": 10
+                            "uses": 10,
+                            "type": "FIXED"
                         }
                         """)
                 ).andExpectAll(
@@ -42,7 +43,8 @@ public class PromoCodeTests {
                                         "discountAmount": 10.0,
                                         "currency": "USD",
                                         "usesLeft": 10,
-                                        "timesUsed": 0
+                                        "timesUsed": 0,
+                                        "type": "FIXED"
                                     }]
                                 }
                                 """)
@@ -55,14 +57,15 @@ public class PromoCodeTests {
                             "expirationDate": "2025-01-01",
                             "discountAmount": 10.0,
                             "currency": "USD",
-                            "uses": 10
+                            "uses": 10,
+                            "type": "FIXED"
                         }
                         """)
         ).andExpectAll(
                 status().isBadRequest(),
                 content().json("""
                         {
-                            "message": "Promo code with this code already exists",
+                            "message": "Error while creating promo code: Promo code with this code already exists",
                             "promoCodes": null
                         }
                         """)

@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.uhhigor.siitask.exception.product.ProductNotFoundException;
 import org.uhhigor.siitask.exception.promocode.CurrenciesDoNotMatchException;
 import org.uhhigor.siitask.exception.promocode.PromoCodeNotFoundException;
@@ -19,6 +16,7 @@ import org.uhhigor.siitask.model.Purchase;
 import org.uhhigor.siitask.service.ProductService;
 import org.uhhigor.siitask.service.PromoCodeService;
 import org.uhhigor.siitask.service.PurchaseService;
+import org.uhhigor.siitask.service.SalesReportService;
 
 import java.util.Currency;
 import java.util.Date;
@@ -33,10 +31,13 @@ public class PurchaseController {
 
     private final PromoCodeService promoCodeService;
 
-    public PurchaseController(PurchaseService purchaseService, ProductService productService, PromoCodeService promoCodeService) {
+    private final SalesReportService salesReportService;
+
+    public PurchaseController(PurchaseService purchaseService, ProductService productService, PromoCodeService promoCodeService, SalesReportService salesReportService) {
         this.purchaseService = purchaseService;
         this.productService = productService;
         this.promoCodeService = promoCodeService;
+        this.salesReportService = salesReportService;
     }
     @PostMapping("/finalize")
     public ResponseEntity<PurchaseResponse> finalizePurchase(@RequestBody PurchaseRequest purchaseRequest) {
@@ -50,7 +51,7 @@ public class PurchaseController {
         try {
             currency = Currency.getInstance(purchaseRequest.getCurrencyCode());
         } catch (IllegalArgumentException | NullPointerException e) {
-            return ResponseEntity.badRequest().body(new PurchaseResponse("Error while finalizing purchase. Invalid currency code: " + purchaseRequest.getCurrencyCode()));
+            return ResponseEntity.badRequest().body(new PurchaseResponse("Purchase Request error: Invalid currency code " + purchaseRequest.getCurrencyCode()));
         }
         PromoCode promoCode = null;
         if(purchaseRequest.getPromoCode() != null) {
@@ -66,11 +67,10 @@ public class PurchaseController {
             if(promoCode == null) {
                 purchase = purchaseService.finalizePurchase(product, currency);
             } else {
-                promoCodeService.usePromoCode(promoCode);
-                purchase = purchaseService.finalizePurchase(product, currency, promoCode);
+                purchase = purchaseService.finalizePurchase(product, promoCode);
             }
             return ResponseEntity.ok(new PurchaseResponse("Purchase successful", purchase));
-        } catch (PurchaseServiceException | CurrenciesDoNotMatchException | PromoCodeUsesInvalidException e) {
+        } catch (PurchaseServiceException | CurrenciesDoNotMatchException e) {
             return ResponseEntity.badRequest().body(new PurchaseResponse(e.getMessage()));
         }
     }
@@ -111,6 +111,11 @@ public class PurchaseController {
         private Long productId;
         private String currencyCode;
         private String promoCode;
+    }
+
+    @GetMapping("/report")
+    public ResponseEntity<SalesReportService.SalesReport> getSalesReport() {
+        return ResponseEntity.ok(salesReportService.getSalesReport());
     }
 
 }

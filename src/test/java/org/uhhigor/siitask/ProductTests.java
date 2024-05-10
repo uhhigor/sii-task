@@ -403,7 +403,7 @@ public class ProductTests {
                 ).andExpectAll(status().isBadRequest(),
                         content().json("""
                                 {
-                                    "message": "Prices cannot be null or empty",
+                                    "message": "Error while adding new product: Prices cannot be null or empty",
                                     "products": null
                                 }
                                 """));
@@ -430,7 +430,7 @@ public class ProductTests {
                 ).andExpectAll(status().isBadRequest(),
                         content().json("""
                                 {
-                                    "message": "Error while adding new product price: Price must be greater than 0",
+                                    "message": "Error while adding new product: Error creating ProductPrice: Price must be greater than 0",
                                     "products": null
                                 }
                                 """));
@@ -457,7 +457,7 @@ public class ProductTests {
                 ).andExpectAll(status().isBadRequest(),
                         content().json("""
                                 {
-                                    "message": "Error while adding new product price: Invalid currency code: USDDDD",
+                                    "message": "Error while adding new product: Error creating ProductPrice: Invalid currency code: USDDDD",
                                     "products": null
                                 }
                                 """));
