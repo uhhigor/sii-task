@@ -59,9 +59,7 @@ public class BuilderTests {
 
     @Test
     public void testProductBuilder() {
-        assertThrowsExactly(ProductException.class, () -> {
-            new ProductBuilder().build();
-        });
+        assertThrowsExactly(ProductException.class, () -> new ProductBuilder().build());
 
         try {
             ProductPrice productPrice = new ProductPriceBuilder()
@@ -116,13 +114,9 @@ public class BuilderTests {
 
     @Test
     void testPurchaseBuilder() {
-        assertThrowsExactly(PurchaseException.class, () -> {
-            new PurchaseBuilder().build();
-        });
-        assertThrowsExactly(PurchaseDateInvalidException.class, () -> {
-            new PurchaseBuilder()
-                    .date(new Date(System.currentTimeMillis() + 5000));
-        });
+        assertThrowsExactly(PurchaseException.class, () -> new PurchaseBuilder().build());
+        assertThrowsExactly(PurchaseDateInvalidException.class, () -> new PurchaseBuilder()
+                .date(new Date(System.currentTimeMillis() + 5000)));
 
         assertDoesNotThrow(() -> {
             new PurchaseBuilder()

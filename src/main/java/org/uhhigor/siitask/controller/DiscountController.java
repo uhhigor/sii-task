@@ -41,18 +41,19 @@ public class DiscountController {
         try {
             promoCode = promoCodeService.getByCode(discountPriceRequest.getCode());
         } catch (PromoCodeNotFoundException e) {
-            System.out.println("Promo code not found");
             return ResponseEntity.notFound().build();
         }
         Product product;
         try {
             product = productService.getProductById(discountPriceRequest.getProductId());
         } catch (ProductNotFoundException e) {
-            System.out.println("Product not found");
             return ResponseEntity.notFound().build();
         }
         Currency currency = Currency.getInstance(discountPriceRequest.getCurrencyCode());
         ProductPrice productPrice = product.getProductPriceByCurrency(currency);
+        if(productPrice == null) {
+            return ResponseEntity.badRequest().body(new DiscountPriceResponse("Product price not found for currency " + currency.getCurrencyCode(), 0, currency));
+        }
         try {
             double discountPrice = discountPriceService.getDiscountPrice(product, promoCode);
             return ResponseEntity.ok(new DiscountPriceResponse(discountPrice, productPrice.getCurrency()));
