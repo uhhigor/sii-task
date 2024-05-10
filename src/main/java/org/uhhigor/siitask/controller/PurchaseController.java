@@ -1,5 +1,6 @@
 package org.uhhigor.siitask.controller;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +53,7 @@ public class PurchaseController {
             return ResponseEntity.badRequest().body(new PurchaseResponse("Error while finalizing purchase. Invalid currency code: " + purchaseRequest.getCurrencyCode()));
         }
         PromoCode promoCode = null;
-        if(!purchaseRequest.getPromoCode().isEmpty()) {
+        if(purchaseRequest.getPromoCode() != null) {
             try {
                 promoCode = promoCodeService.getByCode(purchaseRequest.getPromoCode());
             } catch (PromoCodeNotFoundException e) {
@@ -79,6 +80,8 @@ public class PurchaseController {
         private String message;
         private PurchaseData purchase;
 
+        @Getter
+        @NoArgsConstructor
         private static class PurchaseData {
             private Date date;
             private Long productId;
