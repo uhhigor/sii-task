@@ -12,7 +12,7 @@ public class ProductBuilder {
     private List<ProductPrice> prices;
 
     public ProductBuilder name(String name) throws ProductNameIncorrectException {
-        if(name.isEmpty()) {
+        if(name == null || name.isEmpty()) {
             throw new ProductNameIncorrectException("Name cannot be empty");
         }
         this.name = name;

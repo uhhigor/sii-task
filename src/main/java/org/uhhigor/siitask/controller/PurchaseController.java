@@ -70,7 +70,7 @@ public class PurchaseController {
             }
             return ResponseEntity.ok(new PurchaseResponse("Purchase successful", purchase));
         } catch (PurchaseServiceException | CurrenciesDoNotMatchException | PromoCodeUsesInvalidException e) {
-            return ResponseEntity.badRequest().body(new PurchaseResponse("Error while finalizing purchase: " + e.getMessage()));
+            return ResponseEntity.badRequest().body(new PurchaseResponse(e.getMessage()));
         }
     }
     @Getter

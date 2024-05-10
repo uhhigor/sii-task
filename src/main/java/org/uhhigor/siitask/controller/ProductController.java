@@ -37,6 +37,9 @@ public class ProductController {
             List<ProductPrice> prices = new ArrayList<>();
             System.out.println(productRequest.toString());
             System.out.println(productRequest.getPrices());
+            if(productRequest.getPrices() == null) {
+                throw new ProductServiceException("Prices cannot be null or empty");
+            }
             for (ProductRequest.ProductPriceData price : productRequest.getPrices()) {
                 ProductPrice productPrice = productService.addProductPrice(price.getPrice(), price.getCurrency());
                 prices.add(productPrice);
@@ -45,7 +48,7 @@ public class ProductController {
             ProductResponse response = new ProductResponse("Product added successfully", List.of(product));
             return ResponseEntity.ok(response);
         } catch (ProductServiceException e) {
-            ProductResponse response = new ProductResponse("Failed to add product: " + e.getMessage(), null);
+            ProductResponse response = new ProductResponse(e.getMessage(), null);
             return ResponseEntity.badRequest().body(response);
         }
     }

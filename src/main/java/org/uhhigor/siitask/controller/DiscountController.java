@@ -5,18 +5,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.uhhigor.siitask.exception.product.ProductNotFoundException;
 import org.uhhigor.siitask.exception.promocode.CurrenciesDoNotMatchException;
 import org.uhhigor.siitask.exception.promocode.PromoCodeExpiredException;
 import org.uhhigor.siitask.exception.promocode.PromoCodeNotFoundException;
 import org.uhhigor.siitask.model.Product;
+import org.uhhigor.siitask.model.ProductPrice;
 import org.uhhigor.siitask.model.PromoCode;
 import org.uhhigor.siitask.service.DiscountPriceService;
 import org.uhhigor.siitask.service.ProductService;
 import org.uhhigor.siitask.service.PromoCodeService;
+
+import java.util.Currency;
 
 @Controller
 @RequestMapping("/discount")
@@ -33,39 +34,60 @@ public class DiscountController {
         this.productService = productService;
     }
 
-    @GetMapping("/product/{productId}/promo/{code}")
-    public ResponseEntity<DiscountPriceResponse> getDiscountPrice(@PathVariable Long productId, @PathVariable String code) {
-        System.out.println("productId = " + productId);
-        System.out.println("code = " + code);
+    @PostMapping
+    public ResponseEntity<DiscountPriceResponse> getDiscountPrice(@RequestBody DiscountPriceRequest discountPriceRequest) {
         PromoCode promoCode;
         try {
-            promoCode = promoCodeService.getByCode(code);
+            promoCode = promoCodeService.getByCode(discountPriceRequest.getCode());
         } catch (PromoCodeNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
         Product product;
         try {
-            product = productService.getProductById(productId);
+            product = productService.getProductById(discountPriceRequest.getProductId());
         } catch (ProductNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
+        Currency currency = Currency.getInstance(discountPriceRequest.getCurrencyCode());
+        ProductPrice productPrice = product.getProductPriceByCurrency(currency);
         try {
             double discountPrice = discountPriceService.getDiscountPrice(product, promoCode);
-            return ResponseEntity.ok(new DiscountPriceResponse(discountPrice, promoCode.getCurrency().getCurrencyCode(), null));
+            return ResponseEntity.ok(new DiscountPriceResponse(discountPrice, productPrice.getCurrency()));
         } catch (PromoCodeExpiredException | CurrenciesDoNotMatchException e) {
-            double regularPrice = product.getProductPriceByCurrency(promoCode.getCurrency()).getPrice();
-            return ResponseEntity.ok(new DiscountPriceResponse(regularPrice, promoCode.getCurrency().getCurrencyCode(), e.getMessage()));
+            return ResponseEntity.badRequest().body(new DiscountPriceResponse(e.getMessage(), productPrice.getPrice(), productPrice.getCurrency()));
         }
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DiscountPriceRequest {
+        private Long productId;
+        private String code;
+        private String currencyCode;
     }
 
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
     public static class DiscountPriceResponse {
-        private double discountPrice;
+        private String message;
+        private DiscountPriceData discountPrice;
 
-        private String currency;
+        public DiscountPriceResponse(double discountPrice, Currency currency) {
+            this.discountPrice = new DiscountPriceData(discountPrice, currency.getCurrencyCode());
+        }
 
-        private String warning;
+        public DiscountPriceResponse(String message, double discountPrice, Currency currency) {
+            this.message = message;
+            this.discountPrice = new DiscountPriceData(discountPrice, currency.getCurrencyCode());
+        }
+        @Getter
+        @NoArgsConstructor
+        @AllArgsConstructor
+        static class DiscountPriceData {
+            private double price;
+            private String currency;
+        }
     }
 }

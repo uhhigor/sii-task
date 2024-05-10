@@ -29,7 +29,7 @@ public class PromoCodeController {
     }
 
     @GetMapping("/{code}")
-    public ResponseEntity<Object> getPromoCode(@PathVariable String code) {
+    public ResponseEntity<PromoCodeResponse> getPromoCode(@PathVariable String code) {
         try {
             return ResponseEntity.ok(new PromoCodeResponse(promoCodeService.getByCode(code)));
         } catch (PromoCodeNotFoundException e) {
@@ -38,7 +38,7 @@ public class PromoCodeController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> addPromoCode(@RequestBody PromoCodeRequest promoCodeRequest) {
+    public ResponseEntity<PromoCodeResponse> addPromoCode(@RequestBody PromoCodeRequest promoCodeRequest) {
         try {
             PromoCode promoCode = promoCodeService.addPromoCode(
                     promoCodeRequest.getCode(),
@@ -49,7 +49,7 @@ public class PromoCodeController {
             );
             return ResponseEntity.ok(new PromoCodeResponse("Promo code added successfully", promoCode));
         } catch (PromoCodeServiceException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(new PromoCodeResponse(e.getMessage()));
         }
     }
 
@@ -78,6 +78,10 @@ public class PromoCodeController {
 
         public PromoCodeResponse(PromoCode promoCode) {
             this.promoCode = new PromoCodeData(promoCode);
+        }
+
+        public PromoCodeResponse(String message) {
+            this.message = message;
         }
 
         @Getter
