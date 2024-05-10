@@ -27,7 +27,7 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<ProductResponse> getProducts() {
         List<Product> products = productService.getProducts();
-        ProductResponse response = new ProductResponse(products.isEmpty() ? "No products found" : products.size() + " products found", products);
+        ProductResponse response = new ProductResponse(products.size() + " products found", products);
         return ResponseEntity.ok(response);
     }
 
@@ -48,7 +48,7 @@ public class ProductController {
             ProductResponse response = new ProductResponse("Product added successfully", List.of(product));
             return ResponseEntity.ok(response);
         } catch (ProductServiceException e) {
-            ProductResponse response = new ProductResponse(e.getMessage(), null);
+            ProductResponse response = new ProductResponse(e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -96,6 +96,10 @@ public class ProductController {
     public static class ProductResponse {
         private String message;
         private List<ProductData> products;
+
+        public ProductResponse(String message) {
+            this.message = message;
+        }
 
         ProductResponse(String message, List<Product> products) {
             this.message = message;

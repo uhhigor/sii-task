@@ -384,7 +384,7 @@ public class ProductTests {
                         content().json("""
                                 {
                                     "message": "Error while adding new product: Name cannot be empty",
-                                    "products": []
+                                    "products": null
                                 }
                                 """));
         } catch (Exception e) {
@@ -404,7 +404,7 @@ public class ProductTests {
                         content().json("""
                                 {
                                     "message": "Prices cannot be null or empty",
-                                    "products": []
+                                    "products": null
                                 }
                                 """));
         } catch (Exception e) {
@@ -431,7 +431,7 @@ public class ProductTests {
                         content().json("""
                                 {
                                     "message": "Error while adding new product price: Price must be greater than 0",
-                                    "products": []
+                                    "products": null
                                 }
                                 """));
         } catch (Exception e) {
@@ -458,7 +458,7 @@ public class ProductTests {
                         content().json("""
                                 {
                                     "message": "Error while adding new product price: Invalid currency code: USDDDD",
-                                    "products": []
+                                    "products": null
                                 }
                                 """));
         } catch (Exception e) {

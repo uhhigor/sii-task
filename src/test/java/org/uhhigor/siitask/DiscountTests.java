@@ -84,14 +84,14 @@ public class DiscountTests {
                             content().json("""
                                     {
                                         "message": "Promo code added successfully",
-                                        "promoCode": {
+                                        "promoCodes": [{
                                             "code": "TESTCODE",
                                             "expirationDate": "2025-01-01T00:00:00.000+00:00",
                                             "discountAmount": 10.0,
                                             "currency": "USD",
                                             "usesLeft": 10,
                                             "timesUsed": 0
-                                        }
+                                        }]
                                     }
                                     """)
                             );
@@ -187,14 +187,14 @@ public class DiscountTests {
                             content().json("""
                                     {
                                         "message": "Promo code added successfully",
-                                        "promoCode": {
+                                        "promoCodes": [{
                                             "code": "TESTCODE",
                                             "expirationDate": "2025-01-01T00:00:00.000+00:00",
                                             "discountAmount": 110.0,
                                             "currency": "USD",
                                             "usesLeft": 10,
                                             "timesUsed": 0
-                                        }
+                                        }]
                                     }
                                     """)
                             );
@@ -291,14 +291,14 @@ public class DiscountTests {
                             content().json("""
                                     {
                                         "message": "Promo code added successfully",
-                                        "promoCode": {
+                                        "promoCodes": [{
                                             "code": "TESTCODE",
                                             "expirationDate": "2025-01-01T00:00:00.000+00:00",
                                             "discountAmount": 10.0,
                                             "currency": "USD",
                                             "usesLeft": 10,
                                             "timesUsed": 0
-                                        }
+                                        }]
                                     }
                                     """)
                             );

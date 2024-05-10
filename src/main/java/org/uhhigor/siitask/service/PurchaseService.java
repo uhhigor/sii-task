@@ -6,6 +6,7 @@ import org.uhhigor.siitask.exception.promocode.CurrenciesDoNotMatchException;
 import org.uhhigor.siitask.exception.purchase.PurchaseException;
 import org.uhhigor.siitask.exception.purchase.PurchaseServiceException;
 import org.uhhigor.siitask.model.Product;
+import org.uhhigor.siitask.model.ProductPrice;
 import org.uhhigor.siitask.model.PromoCode;
 import org.uhhigor.siitask.model.Purchase;
 import org.uhhigor.siitask.repository.PurchaseRepository;
@@ -22,10 +23,6 @@ public class PurchaseService {
     }
 
     public Purchase finalizePurchase(Product product, Currency currency) throws PurchaseServiceException {
-        Double regularPrice = product.getProductPriceByCurrency(currency).getPrice();
-        if(regularPrice == null) {
-            throw new PurchaseServiceException("Product price in selected currency not found");
-        }
         try {
             Purchase purchase = new PurchaseBuilder()
                     .product(product)

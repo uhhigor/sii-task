@@ -2,6 +2,7 @@ package org.uhhigor.siitask.builder;
 
 import org.uhhigor.siitask.exception.purchase.*;
 import org.uhhigor.siitask.model.Product;
+import org.uhhigor.siitask.model.ProductPrice;
 import org.uhhigor.siitask.model.Purchase;
 
 import java.util.Currency;
@@ -66,8 +67,12 @@ public class PurchaseBuilder {
             throw new PurchaseException("Currency cannot be null");
         }
         purchase.setCurrency(currency);
+        ProductPrice productPrice = product.getProductPriceByCurrency(currency);
+        if(productPrice == null) {
+            throw new PurchaseException("Product price in selected currency not found");
+        }
 
-        purchase.setRegularPrice(product.getProductPriceByCurrency(currency).getPrice());
+        purchase.setRegularPrice(productPrice.getPrice());
 
         if(discount == null) {
             discount = 0.0;

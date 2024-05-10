@@ -10,7 +10,9 @@ import org.uhhigor.siitask.exception.promocode.PromoCodeServiceException;
 import org.uhhigor.siitask.model.PromoCode;
 import org.uhhigor.siitask.service.PromoCodeService;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @RestController
@@ -24,14 +26,15 @@ public class PromoCodeController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> getPromoCodes() {
-        return ResponseEntity.ok(promoCodeService.getAllPromoCodes());
+    public ResponseEntity<PromoCodeResponse> getPromoCodes() {
+        List<PromoCode> promoCodes = promoCodeService.getAllPromoCodes();
+        return ResponseEntity.ok(new PromoCodeResponse(promoCodes.size() + " promo codes found", promoCodes));
     }
 
     @GetMapping("/{code}")
     public ResponseEntity<PromoCodeResponse> getPromoCode(@PathVariable String code) {
         try {
-            return ResponseEntity.ok(new PromoCodeResponse(promoCodeService.getByCode(code)));
+            return ResponseEntity.ok(new PromoCodeResponse(List.of(promoCodeService.getByCode(code))));
         } catch (PromoCodeNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
@@ -47,8 +50,8 @@ public class PromoCodeController {
                     promoCodeRequest.getCurrency(),
                     promoCodeRequest.getUses()
             );
-            return ResponseEntity.ok(new PromoCodeResponse("Promo code added successfully", promoCode));
-        } catch (PromoCodeServiceException e) {
+            return ResponseEntity.ok(new PromoCodeResponse("Promo code added successfully", List.of(promoCode)));
+        } catch (PromoCodeServiceException | NullPointerException e) {
             return ResponseEntity.badRequest().body(new PromoCodeResponse(e.getMessage()));
         }
     }
@@ -66,18 +69,23 @@ public class PromoCodeController {
 
     @Getter
     @NoArgsConstructor
-    @AllArgsConstructor
     public static class PromoCodeResponse {
         private String message;
-        private PromoCodeData promoCode;
+        private List<PromoCodeData> promoCodes;
 
-        public PromoCodeResponse(String message, PromoCode promoCode) {
+        public PromoCodeResponse(String message, List<PromoCode> promoCodes) {
             this.message = message;
-            this.promoCode = new PromoCodeData(promoCode);
+            this.promoCodes = new ArrayList<>();
+            for (PromoCode promoCode : promoCodes) {
+                this.promoCodes.add(new PromoCodeData(promoCode));
+            }
         }
 
-        public PromoCodeResponse(PromoCode promoCode) {
-            this.promoCode = new PromoCodeData(promoCode);
+        public PromoCodeResponse(List<PromoCode> promoCodes) {
+            this.promoCodes = new ArrayList<>();
+            for (PromoCode promoCode : promoCodes) {
+                this.promoCodes.add(new PromoCodeData(promoCode));
+            }
         }
 
         public PromoCodeResponse(String message) {

@@ -36,14 +36,14 @@ public class PromoCodeTests {
                         content().json("""
                                 {
                                     "message": "Promo code added successfully",
-                                    "promoCode": {
+                                    "promoCodes": [{
                                         "code": "TESTCODE",
                                         "expirationDate": "2025-01-01T00:00:00.000+00:00",
                                         "discountAmount": 10.0,
                                         "currency": "USD",
                                         "usesLeft": 10,
                                         "timesUsed": 0
-                                    }
+                                    }]
                                 }
                                 """)
                         );
@@ -63,7 +63,7 @@ public class PromoCodeTests {
                 content().json("""
                         {
                             "message": "Promo code with this code already exists",
-                            "promoCode": null
+                            "promoCodes": null
                         }
                         """)
         );
@@ -106,7 +106,7 @@ public class PromoCodeTests {
                         content().json("""
                                 {
                                     "message": "Error while creating promo code: Uses must be greater than 0",
-                                    "promoCode": null
+                                    "promoCodes": null
                                 }
                                 """)
                         );
@@ -129,7 +129,7 @@ public class PromoCodeTests {
                         content().json("""
                                 {
                                     "message": "Error while creating promo code: Discount amount must be greater than 0",
-                                    "promoCode": null
+                                    "promoCodes": null
                                 }
                                 """)
                         );
@@ -154,7 +154,7 @@ public class PromoCodeTests {
                         content().json("""
                                 {
                                     "message": "Error while creating promo code: Expiration date cannot be null or in the past",
-                                    "promoCode": null
+                                    "promoCodes": null
                                 }
                                 """)
                         );
