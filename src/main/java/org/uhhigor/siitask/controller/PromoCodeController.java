@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import org.uhhigor.siitask.builder.PromoCodeBuilder;
 import org.uhhigor.siitask.exception.promocode.PromoCodeException;
 import org.uhhigor.siitask.exception.promocode.PromoCodeNotFoundException;
-import org.uhhigor.siitask.exception.promocode.PromoCodeServiceException;
 import org.uhhigor.siitask.model.PromoCode;
 import org.uhhigor.siitask.service.PromoCodeService;
 

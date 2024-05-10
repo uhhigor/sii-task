@@ -1,11 +1,7 @@
 package org.uhhigor.siitask.service;
 
 import org.springframework.stereotype.Service;
-import org.uhhigor.siitask.builder.ProductBuilder;
-import org.uhhigor.siitask.builder.ProductPriceBuilder;
-import org.uhhigor.siitask.exception.product.ProductException;
 import org.uhhigor.siitask.exception.product.ProductNotFoundException;
-import org.uhhigor.siitask.exception.product.ProductPriceException;
 import org.uhhigor.siitask.exception.product.ProductServiceException;
 import org.uhhigor.siitask.model.Product;
 import org.uhhigor.siitask.model.ProductPrice;
@@ -31,10 +27,6 @@ public class ProductService {
         return result;
     }
 
-    public ProductPrice addProductPrice(ProductPrice productPrice) {
-            return productPriceRepository.save(productPrice);
-    }
-
     public List<ProductPrice> addProductPrices(List<ProductPrice> productPrices) {
         return (List<ProductPrice>) productPriceRepository.saveAll(productPrices);
     }
@@ -55,9 +47,7 @@ public class ProductService {
         Product originalProduct = getProductById(id);
         originalProduct.setName(product.getName());
         originalProduct.setDescription(product.getDescription());
-        System.out.println("Deleting prices");
         deleteProductPrices(originalProduct.getPrices());
-        System.out.println("Adding prices");
         originalProduct.setPrices(addProductPrices(product.getPrices()));
 
         return productRepository.save(originalProduct);

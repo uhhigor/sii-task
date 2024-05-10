@@ -1,6 +1,5 @@
 package org.uhhigor.siitask.controller;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -8,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import org.uhhigor.siitask.exception.product.ProductNotFoundException;
 import org.uhhigor.siitask.exception.promocode.CurrenciesDoNotMatchException;
 import org.uhhigor.siitask.exception.promocode.PromoCodeNotFoundException;
-import org.uhhigor.siitask.exception.promocode.PromoCodeUsesInvalidException;
 import org.uhhigor.siitask.exception.purchase.PurchaseServiceException;
 import org.uhhigor.siitask.model.Product;
 import org.uhhigor.siitask.model.PromoCode;
